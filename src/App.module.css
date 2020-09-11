@@ -1,0 +1,36 @@
+main {
+    display: grid;
+    height: 100vh;
+    width: 100vw;
+    grid-template-areas: "title blank buttons"
+                         "board-title board-title board-title"
+                         "list list list";
+
+    grid-template-rows: 64px 54px auto;
+    grid-auto-columns: 400px auto 272px;
+}
+
+body {
+    margin: 0;
+}
+
+.titleBar{
+    grid-area: title;
+    padding-left: 32px;
+    padding-right: 32px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-primary, blue);
+    border-bottom-right-radius: 20px;
+}
+
+.logo {
+    height: 42px;
+    width: 42px;
+}
+
+.title {
+    color: white;
+}

@@ -1,0 +1,29 @@
+h1{
+    font-family: "Playball", serif ;
+    font-size: 48px;
+}
+
+h2{
+    font-family: "Playball", serif ;
+    font-size: 36px;
+}
+
+h3{
+    font-family: "Ledger", serif;
+    font-size: 24px;
+}
+
+.body1{
+    font-family: "Ledger", serif;
+    font-size: 18px;
+}
+
+.body2{
+    font-family: "Ledger", serif;
+    font-size: 14px;
+}
+
+button{
+    font-family: "Ledger", serif;
+    font-size: 16px;
+}
