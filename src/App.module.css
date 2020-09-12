@@ -3,11 +3,12 @@ main {
     height: 100vh;
     width: 100vw;
     grid-template-areas: "title blank buttons"
-                         "board-title board-title board-title"
+                         "board-title blank2 blank2"
                          "list list list";
 
-    grid-template-rows: 64px 54px auto;
-    grid-auto-columns: 400px auto 300px;
+    grid-template-rows: 64px 54px calc(100% - 230px);
+    grid-auto-columns: 400px calc(100% - 832px) 320px;
+    gap: 56px;
 }
 
 body {
@@ -40,4 +41,63 @@ body {
     flex-direction: row;
     align-content: center;
     grid-area: buttons;
+}
+
+.boardTitle{
+    grid-area: title;
+}
+
+
+.boardTitleWrapper{
+    border-bottom: #424242 0.5px solid;
+    grid-area: board-title;
+    margin-left: 16px;
+    padding-left: 18px;
+    display: grid;
+    grid-template-areas: "title edit";
+    grid-template-columns:auto 48px ;
+}
+
+
+.editBoardTitleButton{
+    visibility: hidden;
+    border: none;
+    border-radius: 100px;
+    grid-area: edit;
+    width: 48px;
+    height: 48px;
+    background: rgba(126, 205, 224, 0);
+    transition: 300ms linear all;
+}
+
+.editBoardTitleButton:focus{
+    outline: none;
+}
+
+.editBoardTitleButtonIcon{
+    height: 32px;
+    width:32px;
+}
+
+.boardTitleWrapper:hover > .editBoardTitleButton{
+    visibility: visible;
+}
+
+.editBoardTitleButton:hover{
+    background: rgba(126, 205, 224, 0.4);
+}
+
+.lists{
+    display: flex;
+    padding: 0 56px 64px;
+    grid-area: list;
+    overflow-x: auto;
+}
+
+.list:not(:last-of-type){
+    margin-right: 64px;
+}
+
+.list:last-of-type{
+   border-right: 56px solid rgba(0,0,0,0);
 }

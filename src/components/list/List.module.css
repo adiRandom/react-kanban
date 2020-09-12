@@ -1,0 +1,70 @@
+.list {
+    display: flex;
+    height: 100%;
+    min-width: 288px;
+    flex-direction: column;
+}
+
+.listHeader {
+    background: var(--color-accent, blue);
+    display: grid;
+    grid-template-areas: "title edit";
+    align-items: center;
+    grid-template-columns: auto 44px;
+}
+
+.listTitle {
+    margin-left: 24px;
+}
+
+.listTitleEditButton {
+    visibility: hidden;
+    border: none;
+    border-radius: 100px;
+    grid-area: edit;
+    width: 36px;
+    height: 36px;
+    background: rgba(60, 60, 60, 0);
+    transition: 300ms linear all;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.listTitleEditButtonIcon {
+    width: 24px;
+    height: 24px;
+}
+
+.listHeader:hover > .listTitleEditButton {
+    visibility: visible;
+}
+
+.listTitleEditButton:focus {
+    outline: none;
+}
+
+.listTitleEditButton:hover {
+    background: rgba(60, 60, 60, 0.3);
+}
+
+.items {
+    display: flex;
+    padding: 32px 8px;
+    flex-direction: column;
+    background-color: var(--color-primary, cornflowerblue);
+    backdrop-filter: blur(12px);
+    opacity: 70%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.item{
+    background:white;
+    border-radius: 8px;
+    padding: 16px 8px;
+}
+
+.item:not(:last-of-type){
+    margin-bottom: 32px;
+}

@@ -10,7 +10,7 @@
     align-items: center;
     margin-right: 24px;
     margin-top: 8px;
-    box-sizing: content-box;
+    box-sizing: border-box;
 }
 
 .button:focus {
