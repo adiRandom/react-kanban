@@ -11,9 +11,6 @@ import typography from '../../res/theme/typograph.module.css'
 
 const List = ({items, title, className}: ListModel & { className?: string }) => {
 
-    //TODO: Pull state from redux
-
-
     return (
         <section className={`${style.list} ${className}`}>
             <header className={style.listHeader}>

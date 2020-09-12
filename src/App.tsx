@@ -12,6 +12,8 @@ import editIcon from "./res/icons/edit.png"
 import List from "./components/list/List";
 import {ListModel} from "./models/ListModel";
 import {Item} from "./models/Item";
+import {useSelector} from "react-redux";
+import {Store} from "./store/Store";
 
 const DummyItems: Item[] = [
     {
@@ -31,44 +33,47 @@ const DummyItems: Item[] = [
 
 function App() {
 
-    //TODO: Get state from redux
-    const title = "Title"
-    const lists: ListModel[] = [
-        {
-            items: DummyItems,
-            id: "1",
-            title: "My list"
-        }, {
-            items: DummyItems,
-            id: "1",
-            title: "My list"
-        },
-        {
-            items: DummyItems,
-            id: "1",
-            title: "My list"
-        }, {
-            items: DummyItems,
-            id: "1",
-            title: "My list"
-        },
-        {
-            items:DummyItems,
-            id:"1",
-            title:"My list"
-        },
-        {
-            items:DummyItems,
-            id:"1",
-            title:"My list"
-        },
-        {
-            items:DummyItems,
-            id:"1",
-            title:"My list"
-        }
+    const title = useSelector<Store>(state => state.board.title) as string
+    // const lists: ListModel[] = [
+    //     {
+    //         items: DummyItems,
+    //         id: "1",
+    //         title: "My list"
+    //     }, {
+    //         items: DummyItems,
+    //         id: "1",
+    //         title: "My list"
+    //     },
+    //     {
+    //         items: DummyItems,
+    //         id: "1",
+    //         title: "My list"
+    //     }, {
+    //         items: DummyItems,
+    //         id: "1",
+    //         title: "My list"
+    //     },
+    //     {
+    //         items:DummyItems,
+    //         id:"1",
+    //         title:"My list"
+    //     },
+    //     {
+    //         items:DummyItems,
+    //         id:"1",
+    //         title:"My list"
+    //     },
+    //     {
+    //         items:DummyItems,
+    //         id:"1",
+    //         title:"My list"
+    //     }
+    //
+    // ]
 
-    ]
+    const lists:ListModel[] = useSelector<Store>(state => state.lists) as ListModel[]
+
+    console.log(title)
 
     return (
         <main>
