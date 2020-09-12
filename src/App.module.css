@@ -7,7 +7,7 @@ main {
                          "list list list";
 
     grid-template-rows: 64px 54px auto;
-    grid-auto-columns: 400px auto 272px;
+    grid-auto-columns: 400px auto 300px;
 }
 
 body {
@@ -33,4 +33,11 @@ body {
 
 .title {
     color: white;
+}
+
+.buttonsSection{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    grid-area: buttons;
 }

@@ -1,0 +1,28 @@
+.button {
+    border: none;
+    border-radius: 100px;
+    transition: all linear 200ms;
+    background: rgba(126, 205, 224, 0);
+    height: 48px;
+    width: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 24px;
+    margin-top: 8px;
+    box-sizing: content-box;
+}
+
+.button:focus {
+    outline: none;
+}
+
+.buttonIcon {
+    filter: brightness(70%);
+    height: 32px;
+    width: 32px;
+}
+
+.button:hover {
+    background: rgba(126, 205, 224, 0.4);;
+}
