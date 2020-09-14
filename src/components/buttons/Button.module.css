@@ -1,3 +1,9 @@
+.buttonWrapper{
+    height: 48px;
+    width: 48px;
+    margin-right: 16px;
+}
+
 .button {
     border: none;
     border-radius: 100px;
@@ -8,7 +14,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 24px;
     margin-top: 8px;
     box-sizing: border-box;
 }

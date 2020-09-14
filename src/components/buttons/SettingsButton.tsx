@@ -2,15 +2,22 @@
  * Created by Adrian Pascu at 11-Sep-20
  */
 
-import React from 'react'
+import React, {useState} from 'react'
 import settingsIcon from '../../res/icons/settings.png'
 import buttonStyle from './Button.module.css'
+import Settings from "../settings/Settings";
 
 const SettingsButton = () => {
+
+    const [isMenuVisible, setIsMenuVisible] = useState(false)
+
     return (
-        <button className={buttonStyle.button}>
-            <img className={buttonStyle.buttonIcon} src={settingsIcon} alt={"Settings"}/>
-        </button>
+        <div className={buttonStyle.buttonWrapper}>
+            <button className={buttonStyle.button} onClick={() => setIsMenuVisible(!isMenuVisible)}>
+                <img className={buttonStyle.buttonIcon} src={settingsIcon} alt={"Settings"}/>
+            </button>
+            {isMenuVisible && <Settings/>}
+        </div>
     )
 }
 

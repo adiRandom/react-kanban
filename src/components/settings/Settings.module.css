@@ -1,0 +1,46 @@
+.settings {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background-color: var(--color-accent, cornflowerblue);
+    position: absolute;
+    top:64px;
+    transform:translateX(-90%);
+}
+
+.header {
+    color: white;
+    margin-bottom: 16px;
+    margin-left: 8px;
+    }
+
+.colors {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.color {
+    width: 48px;
+    height: 48px;
+    margin: 0 8px 16px;
+}
+
+.uploadButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:white;
+    background: rgba(126, 205, 224, 0);
+    border: none;
+}
+
+.uploadButton:hover{
+    background: rgba(126, 205, 224, 0.3);
+}
+
+.uploadButtonIcon{
+    height:32px;
+    width: 32px;
+    margin-left: 8px;
+}
