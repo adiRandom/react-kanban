@@ -2,15 +2,25 @@
  * Created by Adrian Pascu at 12-Sep-20
  */
 
-import React from "react";
+import React, {useState} from "react";
 import buttonStyle from "./Button.module.css"
 import loadIcon from "../../res/icons/load.png";
+import style from "./LoadButton.module.css"
+import typography from '../../res/theme/typograph.module.css'
 
-const LoadButton = ()=>{
+const LoadButton = () => {
+
+    const [isVisible, setIsVisible] = useState(false)
+
     return (
-        <button className={buttonStyle.button}>
-            <img className={buttonStyle.buttonIcon} src={loadIcon} alt={"Load"}/>
-        </button>
+        <div className={buttonStyle.buttonWrapper}>
+            <button onClick={() => setIsVisible(!isVisible)} className={buttonStyle.button}>
+                <img className={buttonStyle.buttonIcon} src={loadIcon} alt={"Load"}/>
+            </button>
+            {isVisible && <div className={style.inputContainer}>
+                <input className={typography.body2}/>
+            </div>}
+        </div>
     )
 }
 

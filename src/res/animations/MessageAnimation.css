@@ -1,0 +1,16 @@
+.message-animation-enter{
+    transform: translateY(100%);
+}
+
+.message-animation-enter-active{
+    transform: translateY(0);
+}
+
+.message-animation-exit{
+    transform: translateY(0%);
+}
+
+.message-animation-exit-active{
+    transform: translateY(100%);
+}
+

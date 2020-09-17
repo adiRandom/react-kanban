@@ -1,0 +1,38 @@
+.inputContainer{
+    position: absolute;
+    top:8px;
+    height:48px;
+    transform: translateX(calc(-100% - 8px));
+}
+
+input{
+    height:100%;
+    text-align: center;
+    color:var(--color-primary-dark,blue);
+    border:1px solid #eeeeee;
+    border-radius: 8px;
+    box-shadow: #505050 1px 1px 4px;
+    animation: input-reveal linear 300ms;
+    animation-iteration-count: 1;
+    width: 160px;
+}
+
+input:focus{
+    border:1px solid var(--color-primary,lightblue);
+    outline: none;
+}
+
+@keyframes input-reveal {
+    0%{
+        width:0;
+        height:0;
+    }
+    30%{
+        width:0;
+        height:48px;
+    }
+    100%{
+        width: 160px;
+        height:48px;
+    }
+}

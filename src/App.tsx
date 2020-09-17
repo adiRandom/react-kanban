@@ -73,8 +73,6 @@ function App() {
 
     const lists:ListModel[] = useSelector<Store>(state => state.lists) as ListModel[]
 
-    console.log(title)
-
     return (
         <main>
             <section className={style.titleBar}>

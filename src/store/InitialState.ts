@@ -6,7 +6,7 @@ import getId from "../utils/IdGenerator";
 
 const INITIAL_STATE: Store = {
     board: {
-        id: getId(),
+        id: getId(8),
         title: "New board"
     },
     lists: []
