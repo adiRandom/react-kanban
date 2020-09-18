@@ -1,5 +1,5 @@
 .message {
-    background-color: var(--color-primary-dark);
+    background: rgba(121,153,237,0.5);
     display: flex;
     align-items: center;
     justify-content: center;

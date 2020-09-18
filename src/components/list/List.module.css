@@ -6,7 +6,8 @@
 }
 
 .listHeader {
-    background: var(--color-accent, blue);
+    background: rgba(126,191,247,0.5);
+    backdrop-filter: blur(12px);
     display: grid;
     grid-template-areas: "title edit";
     align-items: center;
@@ -52,9 +53,8 @@
     display: flex;
     padding: 32px 8px;
     flex-direction: column;
-    background-color: var(--color-primary, cornflowerblue);
+    background: rgba(126,205,224,0.5);
     backdrop-filter: blur(12px);
-    opacity: 70%;
     height: 100%;
     overflow-y: auto;
 }
