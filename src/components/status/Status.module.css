@@ -1,4 +1,4 @@
-.wrapper{
+.iconWrapper {
     border: none;
     border-radius: 100px;
     transition: all linear 200ms;
@@ -20,6 +20,23 @@
     width: 32px;
 }
 
-.wrapper:hover {
+.iconWrapper:hover {
     background: rgba(126, 205, 224, 0.4);;
+}
+
+.wrapper {
+    height: 48px;
+    width: 48px;
+    margin-right: 16px;
+}
+
+.badge {
+    text-align: center;
+    color: white;
+    padding: 2px 16px;
+    background-color: var(--color-primary-dark);
+    position: absolute;
+    border-radius: 8px;
+    transform: translate(-24px,16px);
+    transition: all 100ms linear;
 }

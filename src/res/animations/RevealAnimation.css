@@ -1,0 +1,19 @@
+.reveal-animation-enter{
+    filter: blur(12px);
+    opacity: 0;
+}
+
+.reveal-animation-enter-active{
+    opacity: 100%;
+    filter: blur(0);
+}
+
+.reveal-animation-exit{
+    opacity: 100%;
+    filter: blur(0);
+}
+
+.reveal-animation-exit-active{
+    filter: blur(12px);
+    opacity: 0;
+}

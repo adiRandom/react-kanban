@@ -7,7 +7,7 @@ main {
                          "list list list";
 
     grid-template-rows: 64px 54px calc(100% - 230px);
-    grid-auto-columns: 400px calc(100% - 832px) 320px;
+    grid-auto-columns: 400px calc(100% - 788px) 288px;
     gap: 56px;
 }
 

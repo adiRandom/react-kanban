@@ -12,6 +12,7 @@ import {CSSTransition} from "react-transition-group";
 import "../../res/animations/MessageAnimation.css"
 import {useSelector} from "react-redux";
 import {Store} from "../../store/Store"
+import ANIMATIONS from "../../res/animations/Animations";
 
 const SHARE_MESSAGE_WITH_CLIPBOARD = "Board code copied to clipboard"
 const SHARE_MESSAGE_NO_CLIPBOARD = (id: string) => `Share this code: ${id}`
@@ -47,7 +48,7 @@ const ShareButton = () => {
             <button onClick={share} className={buttonStyle.button}>
                 <img className={buttonStyle.buttonIcon} src={shareIcon} alt={"Load"}/>
             </button>
-            <CSSTransition in={isVisible} timeout={500} classNames={"message-animation"} unmountOnExit mountOnEnter>
+            <CSSTransition in={isVisible} timeout={500} classNames={ANIMATIONS.messageAnimation} unmountOnExit mountOnEnter>
                 <article className={style.message}>
                     <p className={typography.body1}>{message}</p>
                 </article>

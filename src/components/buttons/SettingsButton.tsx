@@ -7,6 +7,7 @@ import settingsIcon from '../../res/icons/settings.png'
 import buttonStyle from './Button.module.css'
 import Settings from "../settings/Settings";
 
+
 const SettingsButton = () => {
 
     const [isMenuVisible, setIsMenuVisible] = useState(false)
@@ -16,7 +17,7 @@ const SettingsButton = () => {
             <button className={buttonStyle.button} onClick={() => setIsMenuVisible(!isMenuVisible)}>
                 <img className={buttonStyle.buttonIcon} src={settingsIcon} alt={"Settings"}/>
             </button>
-            {isMenuVisible && <Settings/>}
+                <Settings isVisible={isMenuVisible}/>
         </div>
     )
 }

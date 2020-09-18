@@ -6,8 +6,7 @@
     position: absolute;
     top:64px;
     transform:translateX(-90%);
-    animation-iteration-count: 1;
-    animation:settings-reveal linear 100ms;
+    transition:all linear 100ms;
 }
 
 .header {
@@ -47,15 +46,15 @@
     margin-left: 8px;
 }
 
-@keyframes settings-reveal {
-    0%{
-        filter: blur(12px);
-        opacity: 0;
-    }
+/*@keyframes settings-reveal {*/
+/*    0%{*/
+/*        filter: blur(12px);*/
+/*        opacity: 0;*/
+/*    }*/
 
-    100%{
-        opacity: 100%;
-        filter: blur(0);
-    }
+/*    100%{*/
+/*        opacity: 100%;*/
+/*        filter: blur(0);*/
+/*    }*/
 
-}
+/*}*/
