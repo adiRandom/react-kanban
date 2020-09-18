@@ -3,7 +3,6 @@ import logo from './res/icons/logo.png'
 import style from './App.module.css'
 import './res/theme/colors.css'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import typography from './res/theme/typograph.module.css'
 import SettingsButton from "./components/buttons/SettingsButton";
 import LoadButton from "./components/buttons/LoadButton";
 import ShareButton from "./components/buttons/ShareButton";
@@ -13,7 +12,7 @@ import List from "./components/list/List";
 import {ListModel} from "./models/ListModel";
 import {Item} from "./models/Item";
 import {useSelector} from "react-redux";
-import {Store} from "./store/Store";
+import {BackgroundType, Board, Store} from "./store/Store";
 
 const DummyItems: Item[] = [
     {
@@ -71,10 +70,14 @@ function App() {
     //
     // ]
 
-    const lists:ListModel[] = useSelector<Store>(state => state.lists) as ListModel[]
+    const lists: ListModel[] = useSelector<Store>(state => state.lists) as ListModel[]
+
+    const boardState = useSelector<Store>(state => state.board) as Board
 
     return (
-        <main>
+        <main style={{
+            background: boardState.backgroundType === BackgroundType.COLOR ? boardState.background : `url(${boardState.background})`
+        }}>
             <section className={style.titleBar}>
                 <img className={style.logo} src={logo} alt={"Logo"}/>
                 <h1 className={style.title}>React Kanban</h1>

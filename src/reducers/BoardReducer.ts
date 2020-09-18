@@ -4,7 +4,7 @@
 
 import {Reducer} from 'redux'
 import {Board} from "../store/Store";
-import {BoardAction} from "../actions/BoardActions";
+import {BoardAction, ChangeBackgroundPayload} from "../actions/BoardActions";
 import INITIAL_STATE from "../store/InitialState";
 
 const BoardReducer: Reducer<Board, BoardAction> = (state = INITIAL_STATE.board, action) => {
@@ -12,12 +12,19 @@ const BoardReducer: Reducer<Board, BoardAction> = (state = INITIAL_STATE.board, 
         case "RENAME_BOARD":
             return {
                 ...state,
-                title: action.payload
+                title: action.payload as string
             }
         case "SET_BOARD_ID":
             return {
                 ...state,
-                id: action.payload
+                id: action.payload as string
+            }
+        case "CHANGE_BACKGROUND":
+            const {background, backgroundType} = action.payload as ChangeBackgroundPayload
+            return {
+                ...state,
+                backgroundType,
+                background
             }
         default:
             return state
