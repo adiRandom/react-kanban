@@ -5,7 +5,7 @@
     transform: translateX(calc(-100% - 8px));
 }
 
-input{
+.input{
     height:100%;
     text-align: center;
     color:var(--color-primary-dark,blue);
@@ -17,7 +17,7 @@ input{
     width: 160px;
 }
 
-input:focus{
+.input:focus{
     border:1px solid var(--color-primary,lightblue);
     outline: none;
 }

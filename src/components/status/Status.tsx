@@ -6,7 +6,7 @@ import React, {useEffect, useState} from "react";
 import loadingIcon from '../../res/icons/loading-status.gif'
 import doneIcon from "../../res/icons/done-status.png"
 import style from "./Status.module.css"
-import typography from '../../res/theme/typograph.module.css'
+import typography from '../../res/theme/typography.module.css'
 import CSSTransition from "react-transition-group/CSSTransition";
 import "../../res/animations/RevealAnimation.css"
 import ANIMATIONS from "../../res/animations/Animations";

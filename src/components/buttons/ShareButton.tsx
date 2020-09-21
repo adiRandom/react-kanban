@@ -6,7 +6,7 @@
 import React, {useEffect, useState} from "react";
 import buttonStyle from "./Button.module.css"
 import shareIcon from "../../res/icons/share.png";
-import typography from '../../res/theme/typograph.module.css'
+import typography from '../../res/theme/typography.module.css'
 import style from './ShareButton.module.css'
 import {CSSTransition} from "react-transition-group";
 import "../../res/animations/MessageAnimation.css"

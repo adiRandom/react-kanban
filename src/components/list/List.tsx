@@ -6,7 +6,7 @@ import React from "react";
 import editIcon from "../../res/icons/edit.png"
 import style from "./List.module.css"
 import {ListModel} from "../../models/ListModel";
-import typography from '../../res/theme/typograph.module.css'
+import typography from '../../res/theme/typography.module.css'
 
 
 const List = ({items, title, className}: ListModel & { className?: string }) => {
