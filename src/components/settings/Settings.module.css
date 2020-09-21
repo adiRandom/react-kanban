@@ -34,7 +34,7 @@
     color:white;
     background: rgba(126, 205, 224, 0);
     border: none;
-    border-radius: 16px;
+    border-radius: 8px;
     transition: all ease-in 200ms;
 }
 
