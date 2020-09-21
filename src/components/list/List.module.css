@@ -6,13 +6,16 @@
 }
 
 .listHeader {
-    background: rgba(126,191,247,0.5);
-    backdrop-filter: blur(12px);
+    background: rgba(126,191,247,0.8);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(8px);
     display: grid;
     grid-template-areas: "title edit";
     align-items: center;
     grid-template-columns: auto 44px;
+    padding: 18px 0;
 }
+
 
 .listTitle {
     margin-left: 24px;

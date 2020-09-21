@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import logo from './res/icons/logo.png'
 import style from './App.module.css'
 import './res/theme/colors.css'
@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {BackgroundType, Board, Store} from "./store/Store";
 import {BoardAction} from "./actions/BoardActions";
 import typography from "./res/theme/typography.module.css"
+import CreateList from "./components/CreateList/CreateList";
 
 const DummyItems: Item[] = [
     {
@@ -82,13 +83,13 @@ function App() {
     const dispatch = useDispatch()
 
 
-   // Focus input on reveal
-   useEffect(()=>{
-       if(editingBoardTitle) {
-           editBoardTitleRef.current?.focus()
-           editBoardTitleRef.current?.setSelectionRange(0, editBoardTitle.length, "forward")
-       }
-   },[editingBoardTitle])
+    // Focus input on reveal
+    useEffect(() => {
+        if (editingBoardTitle) {
+            editBoardTitleRef.current?.focus()
+            editBoardTitleRef.current?.setSelectionRange(0, editBoardTitle.length, "forward")
+        }
+    }, [editingBoardTitle])
 
     function updateBoardTitle() {
         dispatch({
@@ -119,11 +120,13 @@ function App() {
             </section>
             <header className={style.boardTitleWrapper}>
                 {!editingBoardTitle && <h2 className={style.boardTitle}>{boardState.title}</h2>}
-                {!editingBoardTitle && <button className={style.editBoardTitleButton} onClick={()=>setEditingBoardTitle(true)}>
+                {!editingBoardTitle &&
+                <button className={style.editBoardTitleButton} onClick={() => setEditingBoardTitle(true)}>
                     <img src={editIcon} alt={"Edit"} className={style.editBoardTitleButtonIcon}/>
                 </button>}
                 {editingBoardTitle &&
-                <input className={`${typography.h2} ${style.editTitle}`} ref={editBoardTitleRef} onKeyPress={e => updateBoardTitleOnEnterPressed(e as any)} value={editBoardTitle}
+                <input className={`${typography.h2} ${style.editTitle}`} ref={editBoardTitleRef}
+                       onKeyPress={e => updateBoardTitleOnEnterPressed(e as any)} value={editBoardTitle}
                        onBlur={updateBoardTitle}
                        onChange={e => setEditBoardTitle(e.target.value)}/>}
             </header>
@@ -131,6 +134,8 @@ function App() {
                 {lists.map(list =>
                     (<List className={style.list} key={list.id} {...list}/>)
                 )}
+                {/*Create list button*/}
+                <CreateList/>
             </section>
         </main>
     );
