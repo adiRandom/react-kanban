@@ -82,7 +82,6 @@ function App() {
     const editBoardTitleRef = useRef<HTMLInputElement>(null)
     const dispatch = useDispatch()
 
-
     // Focus input on reveal
     useEffect(() => {
         if (editingBoardTitle) {
@@ -118,7 +117,9 @@ function App() {
                 <ShareButton/>
                 <Status/>
             </section>
-            <header className={style.boardTitleWrapper}>
+            <header className={style.boardTitleWrapper} style={{
+                borderBottomWidth: editingBoardTitle ? 0 : "0.5px"
+            }}>
                 {!editingBoardTitle && <h2 className={style.boardTitle}>{boardState.title}</h2>}
                 {!editingBoardTitle &&
                 <button className={style.editBoardTitleButton} onClick={() => setEditingBoardTitle(true)}>

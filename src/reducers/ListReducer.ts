@@ -4,7 +4,7 @@
 
 import {Reducer} from 'redux'
 import {ListModel} from "../models/ListModel";
-import {ListAction} from "../actions/ListAction";
+import {ListAction, RenameListPayload} from "../actions/ListAction";
 import INITIAL_STATE from "../store/InitialState";
 import getId from "../utils/IdGenerator";
 
@@ -20,6 +20,17 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
         case "PUSH_LISTS": {
             return [...state, ...action.payload as ListModel[]]
         }
+        case "RENAME_LIST":
+            const {id, title} = (action.payload as RenameListPayload)
+            return state.map(val => {
+                if (val.id === id)
+                    return {
+                        ...val,
+                        title
+                    }
+                else
+                    return val
+            })
         default:
             return state
     }

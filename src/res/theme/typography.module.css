@@ -21,6 +21,12 @@ h3{
     margin:0;
     font-weight: 100;
 }
+.h3{
+    font-family: "Ledger", serif;
+    font-size: 24px;
+    margin:0;
+    font-weight: 100;
+}
 
 .body1{
     font-family: "Ledger", serif;
