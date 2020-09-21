@@ -10,7 +10,26 @@ import typography from '../../res/theme/typography.module.css'
 import {BoardAction} from "../../actions/BoardActions";
 import {useDispatch} from "react-redux";
 import {ListAction} from "../../actions/ListAction";
+import addIcon from "../../res/icons/baseline_add_black_48dp.png"
 
+const AddItem = ({parentId}: { parentId: string }) => {
+
+    const dispatch = useDispatch()
+
+    function onClick() {
+        dispatch({
+            type: "ADD_ITEM",
+            payload: parentId
+        } as ListAction)
+    }
+
+    return (
+        <button className={style.addItemButton} onClick={onClick}>
+            <img className={style.addItemIcon} src={addIcon} alt={"Add"}/>
+            Add item
+        </button>
+    )
+}
 
 const List = ({items, title, className, id}: ListModel & { className?: string }) => {
 
@@ -67,6 +86,7 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
                         <p className={typography.body2}>{item.content}</p>
                     </article>
                 ))}
+                <AddItem parentId={id}/>
             </section>
         </section>
     )

@@ -20,7 +20,7 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
         case "PUSH_LISTS": {
             return [...state, ...action.payload as ListModel[]]
         }
-        case "RENAME_LIST":
+        case "RENAME_LIST": {
             const {id, title} = (action.payload as RenameListPayload)
             return state.map(val => {
                 if (val.id === id)
@@ -31,6 +31,22 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
                 else
                     return val
             })
+        }
+        case "ADD_ITEM": {
+            const id = action.payload as string
+            return state.map(val => {
+                if (val.id === id)
+                    return {
+                        ...val,
+                        items: [...val.items, {
+                            content: "New item",
+                            id: getId(32)
+                        }]
+                    }
+                else
+                    return val
+            })
+        }
         default:
             return state
     }

@@ -72,8 +72,41 @@
     background:white;
     border-radius: 8px;
     padding: 16px 8px;
+    margin-bottom: 32px;
 }
 
-.item:not(:last-of-type){
-    margin-bottom: 32px;
+/*.item:not(:last-of-type){*/
+/*    margin-bottom: 32px;*/
+/*}*/
+
+
+.addItemButton{
+    width:100%;
+    border-radius: 8px;
+    padding: 16px 8px;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.5);
+    backdrop-filter: blur(12px);
+    border: none;
+    transition: all linear 300ms;
+}
+
+.addItemButton:hover{
+    background: rgba(255,255,255,0.75);
+}
+
+.addItemButton:focus{
+    outline: none;
+}
+
+.addItemButton:active{
+    background: rgba(220,220,220,0.6);
+    border: none;
+    transition: all linear 200ms;
+}
+
+.addItemIcon{
+    width: 24px;
+    height: 24px;
 }
