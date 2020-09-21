@@ -105,7 +105,8 @@ function App() {
 
     return (
         <main style={{
-            background: boardState.backgroundType === BackgroundType.COLOR ? boardState.background : `url(${boardState.background})`
+            background: boardState.backgroundType === BackgroundType.COLOR ? boardState.background : `url(${boardState.background})`,
+            backgroundSize: boardState.backgroundType === BackgroundType.IMAGE ? "cover" : "initial"
         }}>
             <section className={style.titleBar}>
                 <img className={style.logo} src={logo} alt={"Logo"}/>
