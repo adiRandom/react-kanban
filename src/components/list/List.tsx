@@ -11,6 +11,8 @@ import {BoardAction} from "../../actions/BoardActions";
 import {useDispatch} from "react-redux";
 import {ListAction} from "../../actions/ListAction";
 import addIcon from "../../res/icons/baseline_add_black_48dp.png"
+import ContextMenu from "../ContextMenu/ContextMenu";
+import {DialogAction} from "../../actions/DialogActions";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
@@ -38,6 +40,9 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     const [editedTitle, setEditedTitle] = useState(title)
     const editListTitleRef = useRef<HTMLInputElement>(null)
     const dispatch = useDispatch()
+    const rootRef = useRef<HTMLDivElement>(null)
+    //Array to hold references to all items
+    const itemsRefs: (HTMLElement | null)[] = [];
 
     // Focus input on reveal
     useEffect(() => {
@@ -63,9 +68,34 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
             updateListTitle()
     }
 
+    function requestContextMenu(e: MouseEvent, index: number) {
+        //If ref is not yet available, display a regular context menu
+        if (rootRef && itemsRefs[index]) {
+            e.preventDefault();
+
+            //Compute the position of the context menu
+            const item = itemsRefs[index]!!;
+            const list = rootRef.current!!
+            const {x} = item.getBoundingClientRect()
+            const listWidth = list.offsetWidth;
+
+            const posX = x + listWidth;
+            const posY = e.pageY;
+
+            dispatch({
+                type: "SHOW_DIALOG",
+                payload: {
+                    x: posX,
+                    y: posY
+                }
+            } as DialogAction)
+
+        }
+    }
+
 
     return (
-        <section className={`${style.list} ${className}`}>
+        <section ref={rootRef} className={`${style.list} ${className}`}>
             <header className={style.listHeader}>
                 {!editingListTitle &&
                 <Fragment>
@@ -82,7 +112,8 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
             </header>
             <section className={style.items}>
                 {items.map((item, index) => (
-                    <article className={style.item} key={index}>
+                    <article onContextMenu={e => requestContextMenu(e as any, index)} ref={current => itemsRefs
+                        .push(current)} className={style.item} key={index}>
                         <p className={typography.body2}>{item.content}</p>
                     </article>
                 ))}

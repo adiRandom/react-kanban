@@ -3,9 +3,9 @@
  */
 
 import {Reducer} from 'redux'
-import {Board} from "../store/Store";
 import {BoardAction, ChangeBackgroundPayload} from "../actions/BoardActions";
 import INITIAL_STATE from "../store/InitialState";
+import {Board} from "../models/Board";
 
 const BoardReducer: Reducer<Board, BoardAction> = (state = INITIAL_STATE.board, action) => {
     switch (action.type) {

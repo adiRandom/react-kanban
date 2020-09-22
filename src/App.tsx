@@ -12,10 +12,12 @@ import List from "./components/list/List";
 import {ListModel} from "./models/ListModel";
 import {Item} from "./models/Item";
 import {useDispatch, useSelector} from "react-redux";
-import {BackgroundType, Board, Store} from "./store/Store";
+import {BackgroundType, Store} from "./store/Store";
 import {BoardAction} from "./actions/BoardActions";
 import typography from "./res/theme/typography.module.css"
 import CreateList from "./components/CreateList/CreateList";
+import {Board} from "./models/Board";
+import {Dialog} from "./models/Dialog";
 
 const DummyItems: Item[] = [
     {
@@ -81,6 +83,9 @@ function App() {
 
     const editBoardTitleRef = useRef<HTMLInputElement>(null)
     const dispatch = useDispatch()
+
+    const dialogState = useSelector<Store>(state=>state.dialog) as Dialog
+
 
     // Focus input on reveal
     useEffect(() => {

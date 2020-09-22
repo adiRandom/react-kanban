@@ -4,15 +4,19 @@
 import {BackgroundType, Store} from "./Store";
 import getId from "../utils/IdGenerator";
 import COLORS from "../res/theme/BackgroundColors";
+import {DialogType} from "../models/Dialog";
 
 const INITIAL_STATE: Store = {
     board: {
         id: getId(8),
         title: "New board",
-        background:COLORS[0],
-        backgroundType:BackgroundType.COLOR
+        background: COLORS[0],
+        backgroundType: BackgroundType.COLOR
     },
-    lists: []
+    lists: [],
+    dialog: {
+        type:DialogType.NONE
+    }
 }
 
 export default INITIAL_STATE
