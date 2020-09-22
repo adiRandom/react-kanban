@@ -12,7 +12,9 @@ export type DialogAction = {
 
 export type ContextDialogPayload = {
     x: number,
-    y: number
+    y: number,
+    targetListId: string,
+    targetItemId: string
 }
 
 export function isContextDialogPayload(obj: any): obj is ContextDialogPayload {

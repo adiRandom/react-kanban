@@ -86,7 +86,9 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
                 type: "SHOW_DIALOG",
                 payload: {
                     x: posX,
-                    y: posY
+                    y: posY,
+                    targetListId: id,
+                    targetItemId: items[index].id
                 }
             } as DialogAction)
 

@@ -15,7 +15,9 @@ const DialogReducer: Reducer<Dialog, DialogAction> = (state: Dialog = INITIAL_ST
                 return {
                     contextX: action.payload.x,
                     contextY: action.payload.y,
-                    type: DialogType.CONTEXT
+                    type: DialogType.CONTEXT,
+                    contextTargetItemId: action.payload.targetItemId,
+                    contextTargetListId: action.payload.targetListId
                 }
             else
                 return {

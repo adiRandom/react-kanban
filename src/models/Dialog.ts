@@ -12,7 +12,9 @@ export enum DialogType {
 
 export type Dialog = {
     type:DialogType,
-    // Coordinates of dialog if is context menu
+    // Info about dialog if is context menu
     contextX?:number,
-    contextY?:number
+    contextY?:number,
+    contextTargetItemId?:string,
+    contextTargetListId?:string
 }

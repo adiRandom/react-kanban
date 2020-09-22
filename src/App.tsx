@@ -17,7 +17,8 @@ import {BoardAction} from "./actions/BoardActions";
 import typography from "./res/theme/typography.module.css"
 import CreateList from "./components/CreateList/CreateList";
 import {Board} from "./models/Board";
-import {Dialog} from "./models/Dialog";
+import {Dialog, DialogType} from "./models/Dialog";
+import ContextMenu from "./components/ContextMenu/ContextMenu";
 
 const DummyItems: Item[] = [
     {
@@ -84,7 +85,7 @@ function App() {
     const editBoardTitleRef = useRef<HTMLInputElement>(null)
     const dispatch = useDispatch()
 
-    const dialogState = useSelector<Store>(state=>state.dialog) as Dialog
+    const dialogState = useSelector<Store>(state => state.dialog) as Dialog
 
 
     // Focus input on reveal
@@ -144,6 +145,9 @@ function App() {
                 {/*Create list button*/}
                 <CreateList/>
             </section>
+            {dialogState.type === DialogType.CONTEXT &&
+            <ContextMenu x={dialogState.contextX} y={dialogState.contextY} listId={dialogState.contextTargetListId}
+                         itemId={dialogState.contextTargetItemId}/>}
         </main>
     );
 }

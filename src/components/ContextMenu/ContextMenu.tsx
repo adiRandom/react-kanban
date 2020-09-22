@@ -9,17 +9,20 @@ import style from './ContextMenu.module.css'
 
 type ContextMenuProps = {
     //Position of the context menu
-    x: number,
-    y: number,
+    x?: number,
+    y?: number,
     //Context menu target
-    listId: string
-    itemId: string
+    listId?: string
+    itemId?: string
 }
 
 
 const ContextMenu = ({x, y}: ContextMenuProps) => {
     return (
-        <section className={`${style.contextMenuContainer}`}>
+        <section className={`${style.contextMenuContainer}`} style={{
+            top: y,
+            left: x
+        }}>
             <button className={style.contextMenuButton}>
                 <img className={style.contextMenuButtonIcon} alt={"Edit"} src={editIcon}/>Edit
             </button>
