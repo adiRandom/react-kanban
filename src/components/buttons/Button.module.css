@@ -23,7 +23,7 @@
 }
 
 .buttonIcon {
-    filter: brightness(80%);
+    /*filter: brightness(80%);*/
     height: 32px;
     width: 32px;
 }

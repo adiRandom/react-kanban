@@ -19,6 +19,7 @@ import CreateList from "./components/CreateList/CreateList";
 import {Board} from "./models/Board";
 import {Dialog, DialogType} from "./models/Dialog";
 import ContextMenu from "./components/ContextMenu/ContextMenu";
+import {DialogAction} from "./actions/DialogActions";
 
 const DummyItems: Item[] = [
     {
@@ -96,6 +97,12 @@ function App() {
         }
     }, [editingBoardTitle])
 
+    function disposeDialogs() {
+        dispatch({
+            type: "DISPOSE_DIALOGS"
+        } as DialogAction)
+    }
+
     function updateBoardTitle() {
         dispatch({
             type: "RENAME_BOARD",
@@ -111,7 +118,7 @@ function App() {
 
 
     return (
-        <main style={{
+        <main onClick={disposeDialogs} style={{
             background: boardState.backgroundType === BackgroundType.COLOR ? boardState.background : `url(${boardState.background})`,
             backgroundSize: boardState.backgroundType === BackgroundType.IMAGE ? "cover" : "initial"
         }}>

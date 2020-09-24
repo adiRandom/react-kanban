@@ -6,7 +6,6 @@ export enum DialogType {
     SETTINGS,
     LOAD,
     CONTEXT,
-    SHARE,
     NONE
 }
 
