@@ -15,6 +15,7 @@ import {DialogType} from "../../models/Dialog";
 import {
     useWindowHeight,
 } from '@react-hook/window-size'
+import ListItem from "./ListItem";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
@@ -152,10 +153,8 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
             </header>
             <section className={style.items}>
                 {items.map((item, index) => (
-                    <article onContextMenu={e => requestContextMenu(e as any, index)} ref={current => itemsRefs
-                        .push(current)} className={style.item} key={index}>
-                        <p className={typography.body2}>{item.content}</p>
-                    </article>
+                    <ListItem index={index} setRef={(element, pos) => itemsRefs[pos] = element} item={item}
+                              requestContextMenu={requestContextMenu}/>
                 ))}
                 <AddItem parentId={id}/>
             </section>
