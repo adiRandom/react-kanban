@@ -109,6 +109,7 @@ function App() {
             updateBoardTitle()
     }
 
+
     return (
         <main style={{
             background: boardState.backgroundType === BackgroundType.COLOR ? boardState.background : `url(${boardState.background})`,
@@ -145,7 +146,7 @@ function App() {
                 {/*Create list button*/}
                 <CreateList/>
             </section>
-            {dialogState.type === DialogType.CONTEXT &&
+            { /* Check if all needed values are set */ dialogState.type === DialogType.CONTEXT && dialogState.contextX && dialogState.contextY && dialogState.contextTargetListId && dialogState.contextTargetItemId &&
             <ContextMenu x={dialogState.contextX} y={dialogState.contextY} listId={dialogState.contextTargetListId}
                          itemId={dialogState.contextTargetItemId}/>}
         </main>

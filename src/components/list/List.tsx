@@ -2,17 +2,16 @@
  * Created by Adrian Pascu at 12-Sep-20
  */
 
-import React, {useState, Fragment, useRef, useEffect} from "react";
+import React, {Fragment, MutableRefObject, useEffect, useRef, useState} from "react";
 import editIcon from "../../res/icons/edit.png"
 import style from "./List.module.css"
 import {ListModel} from "../../models/ListModel";
 import typography from '../../res/theme/typography.module.css'
-import {BoardAction} from "../../actions/BoardActions";
 import {useDispatch} from "react-redux";
 import {ListAction} from "../../actions/ListAction";
 import addIcon from "../../res/icons/baseline_add_black_48dp.png"
-import ContextMenu from "../ContextMenu/ContextMenu";
 import {DialogAction} from "../../actions/DialogActions";
+import {DialogType} from "../../models/Dialog";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
@@ -40,9 +39,21 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     const [editedTitle, setEditedTitle] = useState(title)
     const editListTitleRef = useRef<HTMLInputElement>(null)
     const dispatch = useDispatch()
-    const rootRef = useRef<HTMLDivElement>(null)
+    const listRef = useRef<HTMLDivElement>(null)
     //Array to hold references to all items
     const itemsRefs: (HTMLElement | null)[] = [];
+
+
+    //Use to compute position of context menu by getting the visible rect box of items.
+    const intersectionObserver: MutableRefObject<IntersectionObserver | null> = useRef<IntersectionObserver | null>(null)
+
+    //Init intersectionObserver
+    useEffect(() => {
+        if (listRef.current)
+            intersectionObserver.current = new IntersectionObserver(computeContextMenuPositionAndDisplay, {
+                root: listRef.current
+            })
+    }, [listRef])
 
     // Focus input on reveal
     useEffect(() => {
@@ -70,23 +81,24 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
 
     function requestContextMenu(e: MouseEvent, index: number) {
         //If ref is not yet available, display a regular context menu
-        if (rootRef && itemsRefs[index]) {
+        if (listRef && itemsRefs[index]) {
             e.preventDefault();
 
-            //Compute the position of the context menu
-            const item = itemsRefs[index]!!;
-            const list = rootRef.current!!
-            const {x} = item.getBoundingClientRect()
-            const listWidth = list.offsetWidth;
 
-            const posX = x + listWidth;
-            const posY = e.pageY;
+            //Get the visible rect box of this item using the intersection observer api
 
+            intersectionObserver.current?.disconnect()
+            intersectionObserver.current?.observe(itemsRefs[index]!!)
+
+
+            //Dispose action to set the current dialog visible as the context menu and set it target
             dispatch({
                 type: "SHOW_DIALOG",
+                payload: DialogType.CONTEXT
+            } as DialogAction)
+            dispatch({
+                type: "SET_CONTEXT_TARGET",
                 payload: {
-                    x: posX,
-                    y: posY,
                     targetListId: id,
                     targetItemId: items[index].id
                 }
@@ -95,9 +107,30 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
         }
     }
 
+    function computeContextMenuPositionAndDisplay(entries: IntersectionObserverEntry[]) {
+
+        for (let entry of entries) {
+            if (listRef.current) {
+                const {x, height,y} = entry.intersectionRect
+                const listWidth = listRef.current.offsetWidth;
+                const posX = x + listWidth;
+                const posY = y +  height / 2;
+
+
+                dispatch({
+                    type: 'SET_CONTEXT_POSITION',
+                    payload: {
+                        x: posX,
+                        y: posY,
+                    }
+                } as DialogAction)
+            }
+
+        }
+    }
 
     return (
-        <section ref={rootRef} className={`${style.list} ${className}`}>
+        <section ref={listRef} className={`${style.list} ${className}`}>
             <header className={style.listHeader}>
                 {!editingListTitle &&
                 <Fragment>

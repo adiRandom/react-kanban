@@ -3,7 +3,7 @@
  */
 import {DialogType} from "../models/Dialog";
 
-export type DialogActionType = "SHOW_DIALOG" | "DISPOSE_DIALOGS"
+export type DialogActionType = "SHOW_DIALOG" | "DISPOSE_DIALOGS" | "SET_CONTEXT_TARGET" | "SET_CONTEXT_POSITION"
 
 export type DialogAction = {
     type: DialogActionType,
@@ -11,14 +11,14 @@ export type DialogAction = {
 }
 
 export type ContextDialogPayload = {
-    x: number,
-    y: number,
-    targetListId: string,
-    targetItemId: string
+    x?: number,
+    y?: number,
+    targetListId?: string,
+    targetItemId?: string
 }
 
 export function isContextDialogPayload(obj: any): obj is ContextDialogPayload {
-    return (obj.x && obj.y)
+    return (obj.x && obj.y) || (obj.targetListId && obj.targetItemId)
 }
 
 
