@@ -39,7 +39,20 @@ const ContextMenu = ({x, y, itemId, listId}: ContextMenuProps) => {
             }
         } as ListAction)
         dispatch({
-            type:"DISPOSE_DIALOGS"
+            type: "DISPOSE_DIALOGS"
+        } as DialogAction)
+    }
+
+    function deleteItem() {
+        dispatch({
+            type: "DELETE_ITEM",
+            payload: {
+                itemId,
+                listId
+            }
+        } as ListAction)
+        dispatch({
+            type: "DISPOSE_DIALOGS"
         } as DialogAction)
     }
 
@@ -52,7 +65,7 @@ const ContextMenu = ({x, y, itemId, listId}: ContextMenuProps) => {
             <button onClick={edit} className={style.contextMenuButton}>
                 <img className={style.contextMenuButtonIcon} alt={"Edit"} src={editIcon}/>Edit
             </button>
-            <button className={style.contextMenuButton}>
+            <button onClick={deleteItem} className={style.contextMenuButton}>
                 <img className={style.contextMenuButtonIcon} alt={"Delete"}
                      src={deleteIcon}/>Delete
             </button>

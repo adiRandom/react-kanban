@@ -4,7 +4,7 @@
 
 import {Reducer} from 'redux'
 import {ListModel} from "../models/ListModel";
-import {ListAction, RenameListPayload, SaveEditItemPayload, StartEditItemPayload} from "../actions/ListAction";
+import {ListAction, RenameListPayload, SaveEditItemPayload, ModifyItemPayload} from "../actions/ListAction";
 import INITIAL_STATE from "../store/InitialState";
 import getId from "../utils/IdGenerator";
 
@@ -43,7 +43,7 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
                             content: "New item",
                             id: getId(32),
                             isEditing: false,
-                            parentId:id
+                            parentId: id
                         }]
                     }
                 else
@@ -51,7 +51,7 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
             })
         }
         case "START_EDIT_ITEM": {
-            const payload = action.payload as StartEditItemPayload
+            const payload = action.payload as ModifyItemPayload
             //Toggle the editing flag on the specified item
             return state.map(val => {
                 if (val.id !== payload.listId)
@@ -85,6 +85,17 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
                             isEditing: false
                         }
                     })
+                }
+            })
+        }
+        case "DELETE_ITEM": {
+            const payload = action.payload as ModifyItemPayload
+            return state.map(val => {
+                if (val.id !== payload.listId)
+                    return val
+                else return {
+                    ...val,
+                    items: val.items.filter(item => item.id !== payload.itemId)
                 }
             })
         }
