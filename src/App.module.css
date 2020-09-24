@@ -101,7 +101,7 @@ body {
 
 .lists {
     display: flex;
-    padding: 0 56px 64px;
+    padding: 0 16px 64px;
     grid-area: list;
     overflow-x: auto;
 }
