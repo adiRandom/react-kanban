@@ -3,6 +3,9 @@
  */
 
 export type Item = {
-    id:string,
-    content:string
+    id: string,
+    content: string,
+    //Flag for editing this items content
+    isEditing: boolean,
+    parentId:string
 }

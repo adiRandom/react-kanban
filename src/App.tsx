@@ -21,20 +21,20 @@ import {Dialog, DialogType} from "./models/Dialog";
 import ContextMenu from "./components/ContextMenu/ContextMenu";
 import {DialogAction} from "./actions/DialogActions";
 
-const DummyItems: Item[] = [
-    {
-        content: "Cur hilotae cadunt?Heu.Equiso de barbatus lanista, gratia zeta!Fidelis compater rare imperiums lanista est.",
-        id: "1"
-    },
-    {
-        content: "Festus liberis ducunt ad musa.Neuter, altus galluss cito reperire de teres, placidus bursa.Urchin, horror, and courage.A bright form of resurrection is the blessing.To the rich asparagus add chicken lard, rice, adobo sauce and fresh tuna.",
-        id: "2"
-    },
-    {
-        content: "Soft musics knows most justices.All special egos fear each other, only pictorial lamas have a dimension.Aye, black landlubber. go to fort charles.All the stars transform real, crazy ships.Decorate one jar of steak in one quarter cup of remoulade.",
-        id: "3"
-    }
-]
+// const DummyItems: Item[] = [
+//     {
+//         content: "Cur hilotae cadunt?Heu.Equiso de barbatus lanista, gratia zeta!Fidelis compater rare imperiums lanista est.",
+//         id: "1"
+//     },
+//     {
+//         content: "Festus liberis ducunt ad musa.Neuter, altus galluss cito reperire de teres, placidus bursa.Urchin, horror, and courage.A bright form of resurrection is the blessing.To the rich asparagus add chicken lard, rice, adobo sauce and fresh tuna.",
+//         id: "2"
+//     },
+//     {
+//         content: "Soft musics knows most justices.All special egos fear each other, only pictorial lamas have a dimension.Aye, black landlubber. go to fort charles.All the stars transform real, crazy ships.Decorate one jar of steak in one quarter cup of remoulade.",
+//         id: "3"
+//     }
+// ]
 
 
 function App() {

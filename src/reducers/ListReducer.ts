@@ -4,7 +4,7 @@
 
 import {Reducer} from 'redux'
 import {ListModel} from "../models/ListModel";
-import {ListAction, RenameListPayload} from "../actions/ListAction";
+import {ListAction, RenameListPayload, SaveEditItemPayload, StartEditItemPayload} from "../actions/ListAction";
 import INITIAL_STATE from "../store/InitialState";
 import getId from "../utils/IdGenerator";
 
@@ -34,17 +34,58 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
         }
         case "ADD_ITEM": {
             const id = action.payload as string
+            //Add item to the specified list
             return state.map(val => {
                 if (val.id === id)
                     return {
                         ...val,
                         items: [...val.items, {
                             content: "New item",
-                            id: getId(32)
+                            id: getId(32),
+                            isEditing: false,
+                            parentId:id
                         }]
                     }
                 else
                     return val
+            })
+        }
+        case "START_EDIT_ITEM": {
+            const payload = action.payload as StartEditItemPayload
+            //Toggle the editing flag on the specified item
+            return state.map(val => {
+                if (val.id !== payload.listId)
+                    return val
+                else return {
+                    ...val,
+                    items: val.items.map(item => {
+                        if (item.id !== payload.itemId)
+                            return item
+                        else return {
+                            ...item,
+                            isEditing: true
+                        }
+                    })
+                }
+            })
+        }
+        case "SAVE_EDIT_ITEM": {
+            const payload = action.payload as SaveEditItemPayload
+            return state.map(val => {
+                if (val.id !== payload.listId)
+                    return val
+                else return {
+                    ...val,
+                    items: val.items.map(item => {
+                        if (item.id !== payload.itemId)
+                            return item
+                        else return {
+                            ...item,
+                            content: payload.content,
+                            isEditing: false
+                        }
+                    })
+                }
             })
         }
         default:

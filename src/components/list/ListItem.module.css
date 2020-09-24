@@ -4,3 +4,12 @@
     padding: 16px 8px;
     margin-bottom: 32px;
 }
+
+.editContent {
+    background: transparent;
+    outline: none;
+    border:var(--color-primary) 2px solid;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 100%;
+}
