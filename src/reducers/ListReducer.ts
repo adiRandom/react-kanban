@@ -42,7 +42,7 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
                         items: [...val.items, {
                             content: "New item",
                             id: getId(32),
-                            isEditing: false,
+                            isEditing: true,
                             parentId: id
                         }]
                     }

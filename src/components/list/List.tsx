@@ -38,7 +38,7 @@ const AddItem = ({parentId}: { parentId: string }) => {
 
 const List = ({items, title, className, id}: ListModel & { className?: string }) => {
 
-    const [editingListTitle, setEditingListTitle] = useState(false)
+    const [editingListTitle, setEditingListTitle] = useState(true)
 
     const [editedTitle, setEditedTitle] = useState(title)
     const editListTitleRef = useRef<HTMLInputElement>(null)
