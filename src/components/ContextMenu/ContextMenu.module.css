@@ -1,4 +1,6 @@
 .contextMenuContainer {
+
+    /*Height is also computed in List.tst `computeContextMenuPositionAndDisplay`. Also change there if changed here */
     height: 10vh;
     width: 10vw;
     display: flex;

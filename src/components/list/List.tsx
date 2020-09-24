@@ -12,6 +12,9 @@ import {ListAction} from "../../actions/ListAction";
 import addIcon from "../../res/icons/baseline_add_black_48dp.png"
 import {DialogAction} from "../../actions/DialogActions";
 import {DialogType} from "../../models/Dialog";
+import {
+    useWindowHeight,
+} from '@react-hook/window-size'
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
@@ -42,6 +45,8 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     const listRef = useRef<HTMLDivElement>(null)
     //Array to hold references to all items
     const itemsRefs: (HTMLElement | null)[] = [];
+
+    const windowHeight = useWindowHeight()
 
 
     //Use to compute position of context menu by getting the visible rect box of items.
@@ -111,10 +116,10 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
 
         for (let entry of entries) {
             if (listRef.current) {
-                const {x, height,y} = entry.intersectionRect
+                const {x, height, y} = entry.intersectionRect
                 const listWidth = listRef.current.offsetWidth;
                 const posX = x + listWidth;
-                const posY = y +  height / 2;
+                const posY = y + height / 2 - (windowHeight / 100 * 5) /* 5vh to align the context menu middle point with the items middle point */;
 
 
                 dispatch({
