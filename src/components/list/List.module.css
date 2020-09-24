@@ -5,6 +5,7 @@
     flex-direction: column;
 }
 
+
 .listHeader {
     background: rgba(126,191,247,0.8);
     -webkit-backdrop-filter: blur(12px);
@@ -70,6 +71,10 @@
     background: rgba(126,205,224,0.5);
     backdrop-filter: blur(12px);
     height: 100%;
+    overflow-y: hidden;
+}
+
+.list:hover > .items{
     overflow-y: auto;
 }
 

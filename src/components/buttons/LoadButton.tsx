@@ -36,7 +36,7 @@ const LoadButton = () => {
                 <img className={buttonStyle.buttonIcon} src={loadIcon} alt={"Load"}/>
             </button>
             {isVisible && <div className={style.inputContainer}>
-                <input className={`${typography.body2} ${style.input}`}/>
+                <input placeholder={"Enter board code"} className={`${typography.body2} ${style.input}`}/>
             </div>}
         </div>
     )

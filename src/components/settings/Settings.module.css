@@ -7,6 +7,7 @@
     top:64px;
     transform:translateX(-90%);
     transition:all linear 100ms;
+    min-width: 14vw;
 }
 
 .header {
