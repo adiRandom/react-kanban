@@ -20,6 +20,9 @@ import {Board} from "./models/Board";
 import {Dialog, DialogType} from "./models/Dialog";
 import ContextMenu from "./components/ContextMenu/ContextMenu";
 import {DialogAction} from "./actions/DialogActions";
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import DragLayer from './components/list/ListItem/util/DragLayer';
 
 // const DummyItems: Item[] = [
 //     {
@@ -118,45 +121,48 @@ function App() {
 
 
     return (
-        <main onClick={disposeDialogs} style={{
-            background: boardState.backgroundType === BackgroundType.COLOR ? boardState.background : `url(${boardState.background})`,
-            backgroundSize: boardState.backgroundType === BackgroundType.IMAGE ? "cover" : "initial"
-        }}>
-            <section className={style.titleBar}>
-                <img className={style.logo} src={logo} alt={"Logo"}/>
-                <h1 className={style.title}>React Kanban</h1>
-            </section>
-            <section className={style.buttonsSection}>
-                <SettingsButton/>
-                <LoadButton/>
-                <ShareButton/>
-                <Status/>
-            </section>
-            <header className={style.boardTitleWrapper} style={{
-                borderBottomWidth: editingBoardTitle ? 0 : "0.5px"
+        <DndProvider backend={HTML5Backend}>
+            <main onClick={disposeDialogs} style={{
+                background: boardState.backgroundType === BackgroundType.COLOR ? boardState.background : `url(${boardState.background})`,
+                backgroundSize: boardState.backgroundType === BackgroundType.IMAGE ? "cover" : "initial"
             }}>
-                {!editingBoardTitle && <h2 className={style.boardTitle}>{boardState.title}</h2>}
-                {!editingBoardTitle &&
-                <button className={style.editBoardTitleButton} onClick={() => setEditingBoardTitle(true)}>
-                    <img src={editIcon} alt={"Edit"} className={style.editBoardTitleButtonIcon}/>
-                </button>}
-                {editingBoardTitle &&
-                <input className={`${typography.h2} ${style.editTitle}`} ref={editBoardTitleRef}
-                       onKeyPress={e => updateBoardTitleOnEnterPressed(e as any)} value={editBoardTitle}
-                       onBlur={updateBoardTitle}
-                       onChange={e => setEditBoardTitle(e.target.value)}/>}
-            </header>
-            <section className={style.lists}>
-                {lists.map(list =>
-                    (<List className={style.list} key={list.id} {...list}/>)
-                )}
-                {/*Create list button*/}
-                <CreateList/>
-            </section>
-            { /* Check if all needed values are set */ dialogState.type === DialogType.CONTEXT && dialogState.contextX && dialogState.contextY && dialogState.contextTargetListId && dialogState.contextTargetItemId &&
-            <ContextMenu x={dialogState.contextX} y={dialogState.contextY} listId={dialogState.contextTargetListId}
-                         itemId={dialogState.contextTargetItemId}/>}
-        </main>
+                <section className={style.titleBar}>
+                    <img className={style.logo} src={logo} alt={"Logo"}/>
+                    <h1 className={style.title}>React Kanban</h1>
+                </section>
+                <section className={style.buttonsSection}>
+                    <SettingsButton/>
+                    <LoadButton/>
+                    <ShareButton/>
+                    <Status/>
+                </section>
+                <header className={style.boardTitleWrapper} style={{
+                    borderBottomWidth: editingBoardTitle ? 0 : "0.5px"
+                }}>
+                    {!editingBoardTitle && <h2 className={style.boardTitle}>{boardState.title}</h2>}
+                    {!editingBoardTitle &&
+                    <button className={style.editBoardTitleButton} onClick={() => setEditingBoardTitle(true)}>
+                        <img src={editIcon} alt={"Edit"} className={style.editBoardTitleButtonIcon}/>
+                    </button>}
+                    {editingBoardTitle &&
+                    <input className={`${typography.h2} ${style.editTitle}`} ref={editBoardTitleRef}
+                           onKeyPress={e => updateBoardTitleOnEnterPressed(e as any)} value={editBoardTitle}
+                           onBlur={updateBoardTitle}
+                           onChange={e => setEditBoardTitle(e.target.value)}/>}
+                </header>
+                <section className={style.lists}>
+                    {lists.map(list =>
+                        (<List className={style.list} key={list.id} {...list}/>)
+                    )}
+                    {/*Create list button*/}
+                    <CreateList/>
+                </section>
+                { /* Check if all needed values are set */ dialogState.type === DialogType.CONTEXT && dialogState.contextX && dialogState.contextY && dialogState.contextTargetListId && dialogState.contextTargetItemId &&
+                <ContextMenu x={dialogState.contextX} y={dialogState.contextY} listId={dialogState.contextTargetListId}
+                             itemId={dialogState.contextTargetItemId}/>}
+                <DragLayer/>
+            </main>
+        </DndProvider>
     );
 }
 

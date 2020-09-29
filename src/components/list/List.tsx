@@ -15,7 +15,7 @@ import {DialogType} from "../../models/Dialog";
 import {
     useWindowHeight,
 } from '@react-hook/window-size'
-import ListItem from "./ListItem";
+import ListItem from "./ListItem/ListItem";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
@@ -86,7 +86,7 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     }
 
     function requestContextMenu(e: MouseEvent, index: number) {
-        //If ref is not yet available, display a regular context menu
+        //If reference is not yet available, display a regular context menu
         if (listRef && itemsRefs[index]) {
             e.preventDefault();
 
@@ -153,7 +153,7 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
             </header>
             <section className={style.items}>
                 {items.map((item, index) => (
-                    <ListItem index={index} setRef={(element, pos) => itemsRefs[pos] = element} item={item}
+                    <ListItem index={index} sendRefToParent={(element, pos) => itemsRefs[pos] = element} item={item}
                               requestContextMenu={requestContextMenu}/>
                 ))}
                 <AddItem parentId={id}/>

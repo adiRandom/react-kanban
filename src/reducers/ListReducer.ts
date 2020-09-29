@@ -6,7 +6,7 @@ import {Reducer} from 'redux'
 import {ListModel} from "../models/ListModel";
 import {ListAction, RenameListPayload, SaveEditItemPayload, ModifyItemPayload} from "../actions/ListAction";
 import INITIAL_STATE from "../store/InitialState";
-import getId from "../utils/IdGenerator";
+import getId from "../utils/functions/IdGenerator";
 
 const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lists, action) => {
     switch (action.type) {
