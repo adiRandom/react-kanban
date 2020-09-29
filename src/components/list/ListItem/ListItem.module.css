@@ -1,6 +1,7 @@
 .item{
     background:white;
     border-radius: 8px;
+    cursor: move;
     padding: 16px 8px;
     margin-bottom: 32px;
 }

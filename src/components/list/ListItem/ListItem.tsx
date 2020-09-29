@@ -39,9 +39,10 @@ const ListItem = ({index, sendRefToParent, item, requestContextMenu}: ListItemPr
             isDragging: monitor.isDragging(),
             pos: monitor.getClientOffset()
         }) as ListItemDragProps,
-        end:()=>{
+        end: () => {
             console.log("Drag ended")
         }
+
     })
 
     useEffect(() => {

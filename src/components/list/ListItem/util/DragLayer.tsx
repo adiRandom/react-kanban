@@ -29,12 +29,14 @@ const DragLayer = () => {
         return null
     else return (
         <div className={"Dragging"} style={{
-            position: "absolute",
-            top: currentOffset?.y,
-            left: currentOffset?.x,
+            transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
             width: '200px',
             height: '200px',
-            background: "green"
+            background: "green",
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            pointerEvents: "none"
         }}>
             Dragging around
         </div>
