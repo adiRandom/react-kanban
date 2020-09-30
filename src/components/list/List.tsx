@@ -16,7 +16,7 @@ import {
     useWindowHeight,
 } from '@react-hook/window-size'
 import ListItem, {DraggedListItem, LIST_ITEM_DRAG_TYPE} from "./ListItem/ListItem";
-import {DropTargetMonitor, useDrop} from "react-dnd";
+import {DropTargetMonitor, useDrop, XYCoord} from "react-dnd";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
@@ -47,6 +47,8 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     const listRef = useRef<HTMLDivElement>(null)
     //Array to hold references to all items
     const itemsRefs: (HTMLElement | null)[] = [];
+    // State to check if an item is being dragged over
+    const [isItemOver, setIsItemOver] = useState(false)
 
     const windowHeight = useWindowHeight()
 
@@ -122,12 +124,25 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
         }
     }
 
-    function listItemDropped(item: DraggedListItem) {
+    function listItemDropped(item: DraggedListItem, monitor: DropTargetMonitor) {
+
+        // Array of the position of items on the screen ordered based on the order in which they appear in the list
+        const itemYPositions = itemsRefs.map(val => val?.getBoundingClientRect().y ?? 0
+        )
+
+        let pos = 0
+        const y = monitor.getClientOffset()?.y ?? 0
+        for (let i = 0; i < itemYPositions.length; i++)
+            if (y < itemYPositions[i]) {
+                // Since itemYPositions is a sorted array, the dragged element should sit right before this element
+                pos = i;
+                break
+            }
+
         dispatch({
             type: "MOVE_ITEM",
             payload: {
-                //TODO: Let the user choose pos
-                pos: 0,
+                pos,
                 itemListId: item.item.id,
                 sourceListId: item.item.parentId,
                 targetListId: id
@@ -136,8 +151,14 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     }
 
     function listItemHover(item: DraggedListItem, monitor: DropTargetMonitor) {
-
+        if (monitor.isOver()) {  //Handle scroll on item over list edge
+            setIsItemOver(true)
+            scrollListOnItemDragOver(monitor.getClientOffset()!!)
+        } else {
+            setIsItemOver(false)
+        }
     }
+
 
     // Intersection observer callback to compute the position of the context menu
     function computeContextMenuPositionAndDisplay(entries: IntersectionObserverEntry[]) {
@@ -162,9 +183,26 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
         }
     }
 
+    // Function to scroll when item hovers over the list edge
+    function scrollListOnItemDragOver(hoverPosition: XYCoord) {
+        // The area that triggers the scroll
+        const scrollPadding = (listRef.current?.getBoundingClientRect().height ?? 0) * 30 / 100
+        // How much pixels to scroll at once
+        const scrollSpeed = 5;
+        const {y, height} = (listRef.current?.getBoundingClientRect() ?? {y: 0, height: 0})
+        const {y: hoverY} = hoverPosition;
+        if (hoverY >= y && hoverY <= y + scrollPadding) {
+            //Scroll up
+            listRef.current?.scrollBy(0, -scrollSpeed);
+        } else if (hoverY >= (y + height - scrollPadding) && hoverY <= y + height) {
+            //Scroll down
+            listRef.current?.scrollBy(0, scrollSpeed)
+        }
+    }
+
 
     return (
-        <section ref={listRef} className={`${style.list} ${className}`}>
+        <section ref={listRef} className={`${style.list} ${className}`} id={id}>
             <header className={style.listHeader}>
                 {!editingListTitle &&
                 <Fragment>
@@ -179,7 +217,9 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
                        onBlur={updateListTitle}
                        onChange={e => setEditedTitle(e.target.value)}/>}
             </header>
-            <section className={style.items} ref={dropRef}>
+            <section className={style.items} ref={dropRef} style={{
+                overflowY: isItemOver ? "auto" : undefined
+            }}>
                 {items.map((item, index) => (
                     <ListItem index={index} sendRefToParent={(element, pos) => itemsRefs[pos] = element} item={item}
                               requestContextMenu={requestContextMenu}/>
