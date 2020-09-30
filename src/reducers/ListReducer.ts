@@ -117,18 +117,29 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
                 //Change item parent
                 item.parentId = payload.targetListId
                 return state.map(list => {
-                    // Remove the item from the source list
-                    if (list.id === payload.sourceListId)
+
+                    // Special case for moving the item inside the same list
+                    if (payload.targetListId === payload.sourceListId && list.id === payload.sourceListId) {
+                        // Remove it from it's current position
+                        const filteredItems = list.items.filter(val => val.id !== payload.itemListId)
                         return {
                             ...list,
-                            items: list.items.filter(val => val.id !== payload.itemListId)
-                        } as ListModel
+                            // Splice the item in the new position
+                            items: [...filteredItems.slice(0, payload.pos), item, ...filteredItems.slice(payload.pos, list.items.length)]
+                        }
+                    }
 
                     // Add it to the target list
-                    else if (list.id === payload.targetListId)
+                    if (list.id === payload.targetListId)
                         return {
                             ...list,
                             items: [...list.items.slice(0, payload.pos), item, ...list.items.slice(payload.pos, list.items.length)]
+                        } as ListModel
+                    // Remove the item from the source list
+                    else if (list.id === payload.sourceListId)
+                        return {
+                            ...list,
+                            items: list.items.filter(val => val.id !== payload.itemListId)
                         } as ListModel
                     else return list;
                 })
