@@ -2,14 +2,15 @@
  * Created by Adrian Pascu at 24-Sep-20
  */
 
-import React, {useEffect, useRef, useState} from 'react'
+import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
 import style from "./ListItem.module.css";
 import typography from "../../../res/theme/typography.module.css";
 import {Item} from "../../../models/Item";
 import {ListAction, SaveEditItemPayload} from "../../../actions/ListAction";
 import {useDispatch} from "react-redux";
 import TextareaAutosize from 'react-textarea-autosize'
-import {useDrag, XYCoord} from "react-dnd";
+import {useDrag} from "react-dnd";
+import {getEmptyImage} from 'react-dnd-html5-backend'
 
 type ListItemProps = {
     index: number,
@@ -20,34 +21,37 @@ type ListItemProps = {
 }
 
 export const LIST_ITEM_DRAG_TYPE = 'list-item'
-type ListItemDragProps = {
-    isDragging: boolean,
-    pos: XYCoord
+
+export type DraggedListItem = {
+    type: string,
+    item: Item,
+    size: {
+        width: number,
+        height: number
+    }
 }
+
 
 const ListItem = ({index, sendRefToParent, item, requestContextMenu}: ListItemProps) => {
 
     const editContentRef = useRef<HTMLTextAreaElement>(null)
     const [editedContent, setEditedContent] = useState(item.content)
+    //Ref to the top-level html item of this ListItem
+    const ref = useRef<HTMLElement | null>(null) as MutableRefObject<HTMLElement|null>
     const dispatch = useDispatch()
-    const [dragProps, dragRef] = useDrag({
+    const [{isDragging}, dragRef, previewRef] = useDrag({
         item: {
             type: LIST_ITEM_DRAG_TYPE,
-            item
-        },
+            item,
+            size: {
+                width: ref.current?.getBoundingClientRect().width,
+                height: ref.current?.getBoundingClientRect().height
+            }
+        } as DraggedListItem,
         collect: monitor => ({
-            isDragging: monitor.isDragging(),
-            pos: monitor.getClientOffset()
-        }) as ListItemDragProps,
-        end: () => {
-            console.log("Drag ended")
-        }
-
+            isDragging: monitor.isDragging()
+        })
     })
-
-    useEffect(() => {
-        console.log(dragProps)
-    }, [dragProps])
 
     // Focus input on reveal
     useEffect(() => {
@@ -56,6 +60,11 @@ const ListItem = ({index, sendRefToParent, item, requestContextMenu}: ListItemPr
             editContentRef.current?.setSelectionRange(0, editedContent.length, "forward")
         }
     }, [item])
+
+    // Hide the built in drag preview
+    useEffect(() => {
+        previewRef(getEmptyImage())
+    }, [previewRef])
 
     function updateItemContent() {
         dispatch({
@@ -75,12 +84,17 @@ const ListItem = ({index, sendRefToParent, item, requestContextMenu}: ListItemPr
 
     function setRef(current: HTMLElement | null) {
         sendRefToParent(current, index)
+        if (current)
+            ref.current = current;
         dragRef(current)
     }
 
     return (
         <article onContextMenu={e => requestContextMenu(e as any, index)}
                  ref={setRef}
+                 style={{
+                     visibility: isDragging ? 'hidden' : 'visible'
+                 }}
                  className={style.item} key={index}>
             {!item.isEditing && <p className={typography.body2}>{item.content}</p>}
             {item.isEditing &&

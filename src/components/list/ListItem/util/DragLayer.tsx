@@ -2,43 +2,37 @@
  * Created by Adrian Pascu at 29-Sep-20
  */
 
-import React, {useEffect} from "react";
+import React from "react";
 import {useDragLayer, XYCoord} from "react-dnd";
-import {Item} from "../../../../models/Item";
+import DraggedListItem from "../DraggedListItem";
+import {DraggedListItem as DraggedListItemType} from "../ListItem"
+import style from "./DragLayer.module.css"
 
 type DragLayerProps = {
     initialOffset: XYCoord,
     currentOffset: XYCoord,
-    item: Item,
+    item: DraggedListItemType,
     isDragging: boolean
 }
 
 const DragLayer = () => {
-    const {isDragging, initialOffset, currentOffset, item} = useDragLayer(monitor => ({
+    const {isDragging, currentOffset, item} = useDragLayer(monitor => ({
         currentOffset: monitor.getSourceClientOffset(),
         initialOffset: monitor.getInitialSourceClientOffset(),
         item: monitor.getItem(),
         isDragging: monitor.isDragging()
     }) as DragLayerProps)
-    //
-    // useEffect(() => {
-    //     console.log(currentOffset)
-    // })
+
 
     if (!isDragging)
         return null
     else return (
-        <div className={"Dragging"} style={{
+        <div className={style.dragContainer} style={{
             transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
-            width: '200px',
-            height: '200px',
-            background: "green",
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            pointerEvents: "none"
+            width: item.size.width,
+            height: item.size.height,
         }}>
-            Dragging around
+            <DraggedListItem item={item.item}/>
         </div>
     )
 }
