@@ -4,7 +4,13 @@
 
 import {Reducer} from 'redux'
 import {ListModel} from "../models/ListModel";
-import {ListAction, RenameListPayload, SaveEditItemPayload, ModifyItemPayload} from "../actions/ListAction";
+import {
+    ListAction,
+    RenameListPayload,
+    SaveEditItemPayload,
+    ModifyItemPayload,
+    MoveItemPayload
+} from "../actions/ListAction";
 import INITIAL_STATE from "../store/InitialState";
 import getId from "../utils/functions/IdGenerator";
 
@@ -71,6 +77,7 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
         }
         case "SAVE_EDIT_ITEM": {
             const payload = action.payload as SaveEditItemPayload
+            //Find the item to be changed and change its content
             return state.map(val => {
                 if (val.id !== payload.listId)
                     return val
@@ -79,6 +86,7 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
                     items: val.items.map(item => {
                         if (item.id !== payload.itemId)
                             return item
+                        //    Change item content
                         else return {
                             ...item,
                             content: payload.content,
@@ -98,6 +106,33 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
                     items: val.items.filter(item => item.id !== payload.itemId)
                 }
             })
+        }
+        case "MOVE_ITEM": {
+            const payload = action.payload as MoveItemPayload
+            const item = state.find(val => val.id === payload.sourceListId)?.items.find(val => val.id === payload.itemListId)
+
+
+            //Move the item
+            if (item) {
+                //Change item parent
+                item.parentId = payload.targetListId
+                return state.map(list => {
+                    // Remove the item from the source list
+                    if (list.id === payload.sourceListId)
+                        return {
+                            ...list,
+                            items: list.items.filter(val => val.id !== payload.itemListId)
+                        } as ListModel
+
+                    // Add it to the target list
+                    else if (list.id === payload.targetListId)
+                        return {
+                            ...list,
+                            items: [...list.items.slice(0, payload.pos), item, ...list.items.slice(payload.pos, list.items.length)]
+                        } as ListModel
+                    else return list;
+                })
+            } else return state
         }
         default:
             return state

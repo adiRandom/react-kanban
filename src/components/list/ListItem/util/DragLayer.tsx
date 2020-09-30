@@ -28,7 +28,7 @@ const DragLayer = () => {
         return null
     else return (
         <div className={style.dragContainer} style={{
-            transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
+            transform: `translate(${currentOffset?.x}px, ${currentOffset?.y}px)`,
             width: item.size.width,
             height: item.size.height,
         }}>

@@ -8,14 +8,15 @@ import style from "./List.module.css"
 import {ListModel} from "../../models/ListModel";
 import typography from '../../res/theme/typography.module.css'
 import {useDispatch} from "react-redux";
-import {ListAction} from "../../actions/ListAction";
+import {ListAction, MoveItemPayload} from "../../actions/ListAction";
 import addIcon from "../../res/icons/baseline_add_black_48dp.png"
 import {DialogAction} from "../../actions/DialogActions";
 import {DialogType} from "../../models/Dialog";
 import {
     useWindowHeight,
 } from '@react-hook/window-size'
-import ListItem from "./ListItem/ListItem";
+import ListItem, {DraggedListItem, LIST_ITEM_DRAG_TYPE} from "./ListItem/ListItem";
+import {DropTargetMonitor, useDrop} from "react-dnd";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
@@ -52,6 +53,14 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
 
     //Use to compute position of context menu by getting the visible rect box of items.
     const intersectionObserver: MutableRefObject<IntersectionObserver | null> = useRef<IntersectionObserver | null>(null)
+
+    const [, dropRef] = useDrop(
+        {
+            accept: LIST_ITEM_DRAG_TYPE,
+            drop: listItemDropped,
+            hover: listItemHover
+        }
+    )
 
     //Init intersectionObserver
     useEffect(() => {
@@ -113,6 +122,24 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
         }
     }
 
+    function listItemDropped(item: DraggedListItem) {
+        dispatch({
+            type: "MOVE_ITEM",
+            payload: {
+                //TODO: Let the user choose pos
+                pos: 0,
+                itemListId: item.item.id,
+                sourceListId: item.item.parentId,
+                targetListId: id
+            } as MoveItemPayload
+        } as ListAction)
+    }
+
+    function listItemHover(item: DraggedListItem, monitor: DropTargetMonitor) {
+
+    }
+
+    // Intersection observer callback to compute the position of the context menu
     function computeContextMenuPositionAndDisplay(entries: IntersectionObserverEntry[]) {
 
         for (let entry of entries) {
@@ -135,6 +162,7 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
         }
     }
 
+
     return (
         <section ref={listRef} className={`${style.list} ${className}`}>
             <header className={style.listHeader}>
@@ -151,7 +179,7 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
                        onBlur={updateListTitle}
                        onChange={e => setEditedTitle(e.target.value)}/>}
             </header>
-            <section className={style.items}>
+            <section className={style.items} ref={dropRef}>
                 {items.map((item, index) => (
                     <ListItem index={index} sendRefToParent={(element, pos) => itemsRefs[pos] = element} item={item}
                               requestContextMenu={requestContextMenu}/>
