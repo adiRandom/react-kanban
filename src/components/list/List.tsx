@@ -46,7 +46,7 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     const dispatch = useDispatch()
     const listRef = useRef<HTMLDivElement>(null)
     //Array to hold references to all items
-    const itemsRefs: (HTMLElement | null)[] = [];
+    const itemsRefs: MutableRefObject<(HTMLElement | null)[]> = useRef([]);
     // State to check if an item is being dragged over
     const [isItemOver, setIsItemOver] = useState(false)
 
@@ -98,14 +98,14 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
 
     function requestContextMenu(e: MouseEvent, index: number) {
         //If reference is not yet available, display a regular context menu
-        if (listRef && itemsRefs[index]) {
+        if (listRef && itemsRefs.current[index]) {
             e.preventDefault();
 
 
             //Get the visible rect box of this item using the intersection observer api
 
             intersectionObserver.current?.disconnect()
-            intersectionObserver.current?.observe(itemsRefs[index]!!)
+            intersectionObserver.current?.observe(itemsRefs.current[index]!!)
 
 
             //Dispose action to set the current dialog visible as the context menu and set it target
@@ -127,17 +127,21 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     function listItemDropped(item: DraggedListItem, monitor: DropTargetMonitor) {
 
         // Array of the position of items on the screen ordered based on the order in which they appear in the list
-        const itemYPositions = itemsRefs.map(val => val?.getBoundingClientRect().y ?? 0
+        const itemYPositions = itemsRefs.current.map(val => val?.getBoundingClientRect().y ?? 0
         )
-
         let pos = 0
         const y = monitor.getClientOffset()?.y ?? 0
-        for (let i = 0; i < itemYPositions.length; i++)
+        let foundPosition = false;
+        for (let i = 0; i < itemYPositions.length && !foundPosition; i++)
             if (y < itemYPositions[i]) {
                 // Since itemYPositions is a sorted array, the dragged element should sit right before this element
                 pos = i;
-                break
+                foundPosition = true;
             }
+
+        // y wasn't smaller than any of the elemnts in the array, so the item goes to the last position in the list
+        if (!foundPosition)
+            pos = itemYPositions.length;
 
         dispatch({
             type: "MOVE_ITEM",
@@ -221,7 +225,8 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
                 overflowY: isItemOver ? "auto" : undefined
             }}>
                 {items.map((item, index) => (
-                    <ListItem index={index} sendRefToParent={(element, pos) => itemsRefs[pos] = element} item={item}
+                    <ListItem index={index} sendRefToParent={(element, pos) => itemsRefs.current[pos] = element}
+                              item={item}
                               requestContextMenu={requestContextMenu}/>
                 ))}
                 <AddItem parentId={id}/>
