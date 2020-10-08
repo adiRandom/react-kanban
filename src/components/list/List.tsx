@@ -127,21 +127,24 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     function listItemDropped(item: DraggedListItem, monitor: DropTargetMonitor) {
 
         // Array of the position of items on the screen ordered based on the order in which they appear in the list
-        const itemYPositions = itemsRefs.current.map(val => val?.getBoundingClientRect().y ?? 0
+        const itemPositions = itemsRefs.current.map(val => ({
+                y: val?.getBoundingClientRect().y ?? 0,
+                height: val?.getBoundingClientRect().height ?? 0
+            })
         )
         let pos = 0
         const y = monitor.getClientOffset()?.y ?? 0
         let foundPosition = false;
-        for (let i = 0; i < itemYPositions.length && !foundPosition; i++)
-            if (y < itemYPositions[i]) {
-                // Since itemYPositions is a sorted array, the dragged element should sit right before this element
+        for (let i = 0; i < itemPositions.length && !foundPosition; i++)
+            if (y >= itemPositions[i].y && y <= itemPositions[i].y + itemPositions[i].height) {
+//The dragged item should be place on the position of this item
                 pos = i;
                 foundPosition = true;
             }
 
         // y wasn't smaller than any of the elemnts in the array, so the item goes to the last position in the list
         if (!foundPosition)
-            pos = itemYPositions.length;
+            pos = itemPositions.length;
 
         dispatch({
             type: "MOVE_ITEM",
