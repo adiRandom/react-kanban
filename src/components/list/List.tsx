@@ -80,6 +80,12 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
         }
     }, [editingListTitle])
 
+
+    //DEBUGGING
+    useEffect(() => {
+        // console.log(itemsRefs)
+    })
+
     function updateListTitle() {
         dispatch({
             type: "RENAME_LIST",
@@ -127,7 +133,7 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     function listItemDropped(item: DraggedListItem, monitor: DropTargetMonitor) {
 
         // Array of the position of items on the screen ordered based on the order in which they appear in the list
-        const itemPositions = itemsRefs.current.map(val => ({
+        const itemPositions = itemsRefs.current.filter(val => val /* Filter out the null/undef items*/).map(val => ({
                 y: val?.getBoundingClientRect().y ?? 0,
                 height: val?.getBoundingClientRect().height ?? 0
             })
