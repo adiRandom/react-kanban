@@ -1,0 +1,27 @@
+.item {
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 16px 8px;
+    margin-bottom: 32px;
+
+}
+
+.draggedItem {
+    background: white;
+    border-radius: 8px;
+    cursor: move;
+    padding: 16px 8px;
+    margin-bottom: 32px;
+    box-shadow: #424242 1px 2px 4px;
+    transform: rotateZ(5deg);
+}
+
+.editContent {
+    background: transparent;
+    outline: none;
+    border: var(--color-primary) 2px solid;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 100%;
+}

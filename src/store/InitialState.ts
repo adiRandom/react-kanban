@@ -2,7 +2,7 @@
  * Created by Adrian Pascu at 12-Sep-20
  */
 import {BackgroundType, Store} from "./Store";
-import getId from "../utils/IdGenerator";
+import getId from "../utils/functions/IdGenerator";
 import COLORS from "../res/theme/BackgroundColors";
 import {DialogType} from "../models/Dialog";
 
