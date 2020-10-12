@@ -2,7 +2,7 @@
  * Created by Adrian Pascu at 24-Sep-20
  */
 
-import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
+import React, { useEffect, useRef, useState} from 'react'
 import style from "./ListItem.module.css";
 import typography from "../../../res/theme/typography.module.css";
 import {Item} from "../../../models/Item";
@@ -36,16 +36,16 @@ const ListItem = ({index, sendRefToParent, item, requestContextMenu}: ListItemPr
 
     const editContentRef = useRef<HTMLTextAreaElement>(null)
     const [editedContent, setEditedContent] = useState(item.content)
-    //Ref to the top-level html item of this ListItem
-    const ref = useRef<HTMLElement | null>(null) as MutableRefObject<HTMLElement|null>
+    //Ref to the top-level html item of this ListItem. It needs to be state to have the changes reflected in the useDrag hook
+    const [ref, setRef] = useState(null as HTMLElement | null)
     const dispatch = useDispatch()
     const [{isDragging}, dragRef, previewRef] = useDrag({
         item: {
             type: LIST_ITEM_DRAG_TYPE,
             item,
             size: {
-                width: ref.current?.getBoundingClientRect().width,
-                height: ref.current?.getBoundingClientRect().height
+                width: ref?.getBoundingClientRect().width,
+                height: ref?.getBoundingClientRect().height
             }
         } as DraggedListItem,
         collect: monitor => ({
@@ -82,16 +82,16 @@ const ListItem = ({index, sendRefToParent, item, requestContextMenu}: ListItemPr
             updateItemContent()
     }
 
-    function setRef(current: HTMLElement | null) {
+    function setItemRef(current: HTMLElement | null) {
         sendRefToParent(current, index)
         if (current)
-            ref.current = current;
+            setRef(current)
         dragRef(current)
     }
 
     return (
         <article onContextMenu={e => requestContextMenu(e as any, index)}
-                 ref={setRef}
+                 ref={setItemRef}
                  style={{
                      visibility: isDragging ? 'hidden' : 'visible'
                  }}
