@@ -7,10 +7,17 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux'
-import {createStore} from "redux";
+import {createStore,applyMiddleware} from "redux";
+import {initializeApp, firestore} from 'firebase'
 import ROOT_REDUCER from "./reducers/RootReducer";
+import ReactKanbanApi from "./api/ReactKanbanApi";
+import thunk from 'redux-thunk'
 
-const STORE = createStore(ROOT_REDUCER)
+
+const STORE = createStore(ROOT_REDUCER,applyMiddleware(thunk))
+initializeApp(JSON.parse(process.env["REACT_APP_FIREBASE_CONFIG"] as string))
+//Init the API
+ReactKanbanApi.getInstance(firestore())
 
 ReactDOM.render(
     <React.StrictMode>

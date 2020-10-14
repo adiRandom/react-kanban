@@ -1,12 +1,23 @@
 import {BackgroundType} from "../store/Store";
+import getId from "../utils/functions/IdGenerator";
+import COLORS from "../res/theme/BackgroundColors";
 
 /**
  * Created by Adrian Pascu at 22-Sep-20
  */
-
 export type Board = {
     title: string,
     id: string,
     background: string,
-    backgroundType: BackgroundType
+    backgroundType: BackgroundType,
+    isSynced: boolean
 }
+
+export const EMPTY_BOARD: Board = {
+    id: getId(8),
+    title: "New board",
+    background: COLORS[0],
+    backgroundType: BackgroundType.COLOR,
+    isSynced: true
+};
+

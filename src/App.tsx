@@ -11,7 +11,7 @@ import List from "./components/list/List";
 import {ListModel} from "./models/ListModel";
 import {useDispatch, useSelector} from "react-redux";
 import {BackgroundType, Store} from "./store/Store";
-import {BoardAction} from "./actions/BoardActions";
+import {BoardAction, syncRenameBoard} from "./actions/BoardActions";
 import typography from "./res/theme/typography.module.css"
 import CreateList from "./components/CreateList/CreateList";
 import {Board} from "./models/Board";
@@ -21,7 +21,7 @@ import {DialogAction} from "./actions/DialogActions";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import DragLayer from './components/list/ListItem/util/DragLayer';
-
+import ReactKanbanApi from "./api/ReactKanbanApi";
 
 
 function App() {
@@ -37,6 +37,7 @@ function App() {
     const dispatch = useDispatch()
 
     const dialogState = useSelector<Store>(state => state.dialog) as Dialog
+    const api = ReactKanbanApi.getInstance()!!
 
 
     // Focus input on reveal
@@ -46,6 +47,13 @@ function App() {
             editBoardTitleRef.current?.setSelectionRange(0, editBoardTitle.length, "forward")
         }
     }, [editingBoardTitle])
+
+    //Add board to background
+
+    useEffect(() => {
+        api.createBoard(boardState.id)
+    }, [])
+
 
     function disposeDialogs() {
         dispatch({
@@ -59,6 +67,7 @@ function App() {
             payload: editBoardTitle
         } as BoardAction)
         setEditingBoardTitle(false)
+        dispatch(syncRenameBoard(editBoardTitle))
     }
 
     function updateBoardTitleOnEnterPressed(e: KeyboardEvent) {
