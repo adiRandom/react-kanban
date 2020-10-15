@@ -2,10 +2,7 @@
  * Created by Adrian Pascu at 12-Sep-20
  */
 import {ListModel} from "../models/ListModel";
-import {Dispatch} from 'redux'
-import {Store} from "../store/Store";
-import {BoardAction} from "./BoardActions";
-import ReactKanbanApi from "../api/ReactKanbanApi";
+
 
 // Push list is used to load lists for an existent board
 export type ListActionType =
@@ -47,19 +44,4 @@ export type MoveItemPayload = {
     itemListId: string,
     targetListId: string,
     pos: number
-}
-
-export function syncListRename(list: ListModel) {
-    return async (dispatch: Dispatch, getState: () => Store) => {
-        dispatch({
-            type: "START_SYNCING"
-        } as BoardAction)
-        const {board} = getState()
-        const {id} = board
-
-        await ReactKanbanApi.getInstance()?.renameList(id, list)
-        dispatch({
-            type: "MARK_SYNC_DONE"
-        } as BoardAction)
-    }
 }

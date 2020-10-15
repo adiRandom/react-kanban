@@ -11,7 +11,7 @@ import List from "./components/list/List";
 import {ListModel} from "./models/ListModel";
 import {useDispatch, useSelector} from "react-redux";
 import {BackgroundType, Store} from "./store/Store";
-import {BoardAction, syncRenameBoard} from "./actions/BoardActions";
+import {BoardAction, syncToBackend} from "./actions/BoardActions";
 import typography from "./res/theme/typography.module.css"
 import CreateList from "./components/CreateList/CreateList";
 import {Board} from "./models/Board";
@@ -67,7 +67,8 @@ function App() {
             payload: editBoardTitle
         } as BoardAction)
         setEditingBoardTitle(false)
-        dispatch(syncRenameBoard(editBoardTitle))
+        const api = ReactKanbanApi.getInstance()
+        dispatch(syncToBackend(api?.renameBoard,editBoardTitle))
     }
 
     function updateBoardTitleOnEnterPressed(e: KeyboardEvent) {

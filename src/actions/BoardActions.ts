@@ -1,9 +1,9 @@
 /**
  * Created by Adrian Pascu at 12-Sep-20
  */
-import {BackgroundType, Store} from "../store/Store";
+import {BackgroundType} from "../store/Store";
 import {Dispatch} from 'redux'
-import ReactKanbanApi from "../api/ReactKanbanApi";
+import {getState} from "./Types";
 
 
 export type BoardActionType =
@@ -24,12 +24,18 @@ export type ChangeBackgroundPayload = {
     backgroundType: BackgroundType
 }
 
-export function syncRenameBoard(name: string) {
-    return async (dispatch: Dispatch, getState: () => Store) => {
+type SyncMiddleware = (...args: any) => Promise<any>
+
+//Action creator that mutates the state to reflect the sycn process and executes a middleware which is the actual sync logic
+// Injects the args to the middleware and the board id as the first arg of the middleware
+export function syncToBackend(middleware?: SyncMiddleware, ...args: any) {
+    return async (dispatch: Dispatch, getState: getState) => {
         dispatch({type: "START_SYNCING"} as BoardAction)
         const {board} = getState()
         const {id} = board
-        await ReactKanbanApi.getInstance()?.renameBoard(id, name)
+        if (middleware)
+            await middleware(id, ...args)
         dispatch({type: "MARK_SYNC_DONE"} as BoardAction)
     }
 }
+
