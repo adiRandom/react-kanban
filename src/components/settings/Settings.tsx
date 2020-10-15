@@ -10,8 +10,9 @@ import CSSTransition from "react-transition-group/CSSTransition";
 import "../../res/animations/RevealAnimation.css"
 import COLORS from "../../res/theme/BackgroundColors";
 import {useDispatch} from "react-redux";
-import {BoardAction} from "../../actions/BoardActions";
+import {BoardAction, syncToBackend} from "../../actions/BoardActions";
 import {BackgroundType} from "../../store/Store";
+import ReactKanbanApi from "../../api/ReactKanbanApi";
 
 
 type SettingsProps = {
@@ -31,6 +32,9 @@ const Settings = ({isVisible}: SettingsProps) => {
                 background: color
             }
         } as BoardAction)
+
+        const api = ReactKanbanApi.getInstance()
+        dispatch(syncToBackend(api?.changeBackgroundColor,color))
     }
 
     function displayFilePicker() {
@@ -48,6 +52,8 @@ const Settings = ({isVisible}: SettingsProps) => {
                     backgroundType: BackgroundType.IMAGE
                 }
             } as BoardAction)
+            const api = ReactKanbanApi.getInstance()
+            dispatch(syncToBackend(api?.changeBackgroundImage,file))
         }
     }
 

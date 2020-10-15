@@ -8,5 +8,5 @@ import {ListModel} from "../../models/ListModel";
 export type Board = {
     [k in keyof a_Board]: a_Board[k]
 } & {
-    lists: ListModel[]
+    lists: ListModel[],
 }

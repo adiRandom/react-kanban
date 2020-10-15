@@ -2,7 +2,7 @@
  * Created by Adrian Pascu at 14-Oct-20
  */
 
-import {firestore} from 'firebase'
+import {firestore, storage} from 'firebase'
 import {Board} from './models/Board'
 import {BackgroundType} from "../store/Store";
 import {ListModel} from "../models/ListModel";
@@ -13,10 +13,12 @@ const BOARDS_COLLECTION = "boards"
 export default class ReactKanbanApi {
     private static db?: firestore.Firestore = undefined;
     private static boardsCollectionRef: firestore.CollectionReference;
+    private static storageBucket: storage.Storage
 
     private constructor(_db: firestore.Firestore) {
         ReactKanbanApi.db = _db
         ReactKanbanApi.boardsCollectionRef = _db.collection(BOARDS_COLLECTION);
+        ReactKanbanApi.storageBucket = storage()
     }
 
     static instance?: ReactKanbanApi = undefined
@@ -71,6 +73,16 @@ export default class ReactKanbanApi {
                 lists: updatedList
             } as Partial<Board>)
         }
+    }
+
+    async changeBackgroundImage(id: string, backgroundImage: File) {
+        const storageRef:storage.Reference = await ReactKanbanApi.storageBucket.ref(id).put(backgroundImage).then(res => res.ref)
+        const downloadUrl:string= await storageRef.getDownloadURL()
+        return ReactKanbanApi.boardsCollectionRef.doc(id).update({
+            background: downloadUrl,
+            backgroundType: BackgroundType.IMAGE
+        } as Board)
+
     }
 
 }
