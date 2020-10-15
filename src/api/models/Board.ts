@@ -5,6 +5,8 @@
 import {Board as a_Board} from "../../models/Board"
 import {ListModel} from "../../models/ListModel";
 
-export type Board = a_Board | {
+export type Board = {
+    [k in keyof a_Board]: a_Board[k]
+} & {
     lists: ListModel[]
 }

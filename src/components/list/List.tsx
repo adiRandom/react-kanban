@@ -8,7 +8,7 @@ import style from "./List.module.css"
 import {ListModel} from "../../models/ListModel";
 import typography from '../../res/theme/typography.module.css'
 import {useDispatch} from "react-redux";
-import {ListAction, MoveItemPayload} from "../../actions/ListAction";
+import {ListAction, MoveItemPayload, syncListRename} from "../../actions/ListAction";
 import addIcon from "../../res/icons/baseline_add_black_48dp.png"
 import {DialogAction} from "../../actions/DialogActions";
 import {DialogType} from "../../models/Dialog";
@@ -17,6 +17,7 @@ import {
 } from '@react-hook/window-size'
 import ListItem, {DraggedListItem, LIST_ITEM_DRAG_TYPE} from "./ListItem/ListItem";
 import {DropTargetMonitor, useDrop, XYCoord} from "react-dnd";
+import {syncRenameBoard} from "../../actions/BoardActions";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
@@ -37,9 +38,11 @@ const AddItem = ({parentId}: { parentId: string }) => {
     )
 }
 
-const List = ({items, title, className, id}: ListModel & { className?: string }) => {
+const List = (list: ListModel & { className?: string }) => {
 
     const [editingListTitle, setEditingListTitle] = useState(true)
+    //Destructure the model
+    const {items, title, className, id} = list
 
     const [editedTitle, setEditedTitle] = useState(title)
     const editListTitleRef = useRef<HTMLInputElement>(null)
@@ -87,6 +90,14 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     })
 
     function updateListTitle() {
+
+        //Update the list on the backend
+        const updatedList: ListModel = {
+            ...list,
+            title: editedTitle
+        }
+        dispatch(syncListRename(updatedList))
+
         dispatch({
             type: "RENAME_LIST",
             payload: {
@@ -95,6 +106,8 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
             }
         } as ListAction)
         setEditingListTitle(false)
+
+
     }
 
     function updateListTitleOnEnterPressed(e: KeyboardEvent) {
