@@ -3,8 +3,10 @@
  */
 
 import {firestore} from 'firebase'
-import {Board, EMPTY_BOARD} from '../models/Board'
+import {EMPTY_BOARD} from '../models/Board'
+import {Board} from './models/Board'
 import {BackgroundType} from "../store/Store";
+import {ListModel} from "../models/ListModel";
 
 const BOARDS_COLLECTION = "boards"
 
@@ -30,7 +32,8 @@ export default class ReactKanbanApi {
     async createBoard(id: string) {
         return ReactKanbanApi.boardsCollectionRef.doc(id).set({
             ...EMPTY_BOARD,
-            id
+            id,
+            lists: []
         } as Board)
     }
 
@@ -45,6 +48,29 @@ export default class ReactKanbanApi {
             background: color,
             backgroundType: BackgroundType.COLOR
         } as Board)
+    }
+
+    async createList(boardId: string, list: ListModel) {
+        return ReactKanbanApi.boardsCollectionRef.doc(boardId).update({
+            lists: firestore.FieldValue.arrayUnion(list)
+        } as Partial<Board>)
+    }
+
+    async renameList(boardId: string, list: ListModel) {
+        const oldLists = await ReactKanbanApi.boardsCollectionRef.doc(boardId).get().then(doc => doc.data() as ListModel[] | undefined)
+        if (oldLists) {
+            const updatedList = oldLists.map(val => {
+                if (val.id === list.id)
+                    return {
+                        ...val,
+                        title: list.title
+                    }
+                else return val
+            })
+            return ReactKanbanApi.boardsCollectionRef.doc(boardId).update({
+                lists: updatedList
+            } as Partial<Board>)
+        }
     }
 
 }

@@ -12,12 +12,3 @@ export type Board = {
     backgroundType: BackgroundType,
     isSynced: boolean
 }
-
-export const EMPTY_BOARD: Board = {
-    id: getId(8),
-    title: "New board",
-    background: COLORS[0],
-    backgroundType: BackgroundType.COLOR,
-    isSynced: true
-};
-

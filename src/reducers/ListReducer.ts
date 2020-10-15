@@ -13,15 +13,12 @@ import {
 } from "../actions/ListAction";
 import INITIAL_STATE from "../store/InitialState";
 import getId from "../utils/functions/IdGenerator";
+import {getEmptyList} from "../utils/functions/EmptyModelGenerators";
 
 const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lists, action) => {
     switch (action.type) {
         case "CREATE_LIST":
-            const newList: ListModel = {
-                id: getId(32),
-                title: "New list",
-                items: []
-            }
+            const newList: ListModel = getEmptyList(action.payload as string)
             return [...state, newList]
         case "PUSH_LISTS": {
             return [...state, ...action.payload as ListModel[]]

@@ -1,13 +1,13 @@
 /**
  * Created by Adrian Pascu at 12-Sep-20
  */
-import { Store} from "./Store";
+import {Store} from "./Store";
 import {DialogType} from "../models/Dialog";
-import {EMPTY_BOARD} from "../models/Board";
+import {getEmptyBoard} from "../utils/functions/EmptyModelGenerators";
 
 
 const INITIAL_STATE: Store = {
-    board: EMPTY_BOARD,
+    board: getEmptyBoard(),
     lists: [],
     dialog: {
         type: DialogType.NONE
