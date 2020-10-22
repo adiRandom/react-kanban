@@ -9,19 +9,16 @@ import {
     RenameListPayload,
     SaveEditItemPayload,
     ModifyItemPayload,
-    MoveItemPayload
+    MoveItemPayload, AddItemPayload
 } from "../actions/ListAction";
 import INITIAL_STATE from "../store/InitialState";
-import getId from "../utils/functions/IdGenerator";
+import {getEmptyItem, getEmptyList} from "../utils/functions/EmptyModelGenerators";
+import moveItem from "./util/MoveItem";
 
 const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lists, action) => {
     switch (action.type) {
         case "CREATE_LIST":
-            const newList: ListModel = {
-                id: getId(32),
-                title: "New list",
-                items: []
-            }
+            const newList: ListModel = getEmptyList(action.payload as string)
             return [...state, newList]
         case "PUSH_LISTS": {
             return [...state, ...action.payload as ListModel[]]
@@ -39,18 +36,13 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
             })
         }
         case "ADD_ITEM": {
-            const id = action.payload as string
+            const {parentId, itemId} = action.payload as AddItemPayload
             //Add item to the specified list
             return state.map(val => {
-                if (val.id === id)
+                if (val.id === parentId)
                     return {
                         ...val,
-                        items: [...val.items, {
-                            content: "New item",
-                            id: getId(32),
-                            isEditing: true,
-                            parentId: id
-                        }]
+                        items: [...val.items, getEmptyItem(parentId, itemId)]
                     }
                 else
                     return val
@@ -111,39 +103,26 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
             const payload = action.payload as MoveItemPayload
             const item = state.find(val => val.id === payload.sourceListId)?.items.find(val => val.id === payload.itemListId)
 
-
             //Move the item
             if (item) {
                 //Change item parent
                 item.parentId = payload.targetListId
-                return state.map(list => {
 
-                    // Special case for moving the item inside the same list
-                    if (payload.targetListId === payload.sourceListId && list.id === payload.sourceListId) {
-                        // Remove it from it's current position
-                        const filteredItems = list.items.filter(val => val.id !== payload.itemListId)
-                        return {
-                            ...list,
-                            // Splice the item in the new position
-                            items: [...filteredItems.slice(0, payload.pos), item, ...filteredItems.slice(payload.pos, list.items.length)]
-                        }
-                    }
+                const sourceList = state.find(list => list.id === payload.sourceListId);
+                const targetList = state.find(list => list.id === payload.targetListId);
 
-                    // Add it to the target list
-                    if (list.id === payload.targetListId)
-                        return {
-                            ...list,
-                            items: [...list.items.slice(0, payload.pos), item, ...list.items.slice(payload.pos, list.items.length)]
-                        } as ListModel
-                    // Remove the item from the source list
-                    else if (list.id === payload.sourceListId)
-                        return {
-                            ...list,
-                            items: list.items.filter(val => val.id !== payload.itemListId)
-                        } as ListModel
-                    else return list;
-                })
-            } else return state
+                if (sourceList && targetList) {
+                    const [mappedSourceList, mappedTargetList] = moveItem(sourceList, targetList, item, payload.pos);
+                    return state.map(list => {
+                        if (list.id === mappedTargetList.id)
+                            return mappedTargetList
+                        else if (list.id === mappedSourceList.id)
+                            return mappedSourceList;
+                        else return list;
+                    })
+                }
+            }
+            return state;
         }
         default:
             return state

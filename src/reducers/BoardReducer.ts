@@ -26,6 +26,16 @@ const BoardReducer: Reducer<Board, BoardAction> = (state = INITIAL_STATE.board, 
                 backgroundType,
                 background
             }
+        case "MARK_SYNC_DONE":
+            return {
+                ...state,
+                isSynced: true
+            }
+        case "START_SYNCING":
+            return {
+                ...state,
+                isSynced: false
+            }
         default:
             return state
     }

@@ -2,15 +2,18 @@
  * Created by Adrian Pascu at 24-Sep-20
  */
 
-import React, { useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import style from "./ListItem.module.css";
 import typography from "../../../res/theme/typography.module.css";
 import {Item} from "../../../models/Item";
 import {ListAction, SaveEditItemPayload} from "../../../actions/ListAction";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import TextareaAutosize from 'react-textarea-autosize'
 import {useDrag} from "react-dnd";
 import {getEmptyImage} from 'react-dnd-html5-backend'
+import ReactKanbanApi from "../../../api/ReactKanbanApi";
+import {syncToBackend} from "../../../actions/BoardActions";
+import {Store} from "../../../store/Store";
 
 type ListItemProps = {
     index: number,
@@ -39,6 +42,7 @@ const ListItem = ({index, sendRefToParent, item, requestContextMenu}: ListItemPr
     //Ref to the top-level html item of this ListItem. It needs to be state to have the changes reflected in the useDrag hook
     const [ref, setRef] = useState(null as HTMLElement | null)
     const dispatch = useDispatch()
+    const parentList = useSelector<Store>(state => state.lists.find(list => list.id === item.parentId))
     const [{isDragging}, dragRef, previewRef] = useDrag({
         item: {
             type: LIST_ITEM_DRAG_TYPE,
@@ -75,6 +79,16 @@ const ListItem = ({index, sendRefToParent, item, requestContextMenu}: ListItemPr
                 content: editedContent
             } as SaveEditItemPayload
         } as ListAction)
+
+        //Sync with the backend
+        const api = ReactKanbanApi.getInstance();
+        const updatedItem: Item = {
+            content: editedContent,
+            id: item.id,
+            parentId: item.parentId,
+            isEditing: false
+        }
+        dispatch(syncToBackend(api?.changeItemContent.bind(api), parentList, updatedItem))
     }
 
     function updateItemContentOnEnterPressed(e: KeyboardEvent) {

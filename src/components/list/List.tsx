@@ -7,8 +7,8 @@ import editIcon from "../../res/icons/edit.png"
 import style from "./List.module.css"
 import {ListModel} from "../../models/ListModel";
 import typography from '../../res/theme/typography.module.css'
-import {useDispatch} from "react-redux";
-import {ListAction, MoveItemPayload} from "../../actions/ListAction";
+import {useDispatch, useSelector} from "react-redux";
+import {AddItemPayload, ListAction, MoveItemPayload} from "../../actions/ListAction";
 import addIcon from "../../res/icons/baseline_add_black_48dp.png"
 import {DialogAction} from "../../actions/DialogActions";
 import {DialogType} from "../../models/Dialog";
@@ -17,16 +17,28 @@ import {
 } from '@react-hook/window-size'
 import ListItem, {DraggedListItem, LIST_ITEM_DRAG_TYPE} from "./ListItem/ListItem";
 import {DropTargetMonitor, useDrop, XYCoord} from "react-dnd";
+import ReactKanbanApi from "../../api/ReactKanbanApi";
+import {syncToBackend} from "../../actions/BoardActions";
+import getId from "../../utils/functions/IdGenerator";
+import {Item} from "../../models/Item";
+import {Store} from "../../store/Store";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
     const dispatch = useDispatch()
+    const holdingList = useSelector<Store>(state => state.lists.find(list => list.id === parentId))
 
     function onClick() {
+        const itemId = getId(32)
         dispatch({
             type: "ADD_ITEM",
-            payload: parentId
+            payload: {
+                itemId,
+                parentId
+            } as AddItemPayload
         } as ListAction)
+        const api = ReactKanbanApi.getInstance();
+        dispatch(syncToBackend(api?.addItemToList.bind(api), holdingList, itemId))
     }
 
     return (
@@ -37,9 +49,11 @@ const AddItem = ({parentId}: { parentId: string }) => {
     )
 }
 
-const List = ({items, title, className, id}: ListModel & { className?: string }) => {
+const List = (list: ListModel & { className?: string }) => {
 
     const [editingListTitle, setEditingListTitle] = useState(true)
+    //Destructure the model
+    const {items, title, className, id} = list
 
     const [editedTitle, setEditedTitle] = useState(title)
     const editListTitleRef = useRef<HTMLInputElement>(null)
@@ -81,12 +95,16 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
     }, [editingListTitle])
 
 
-    //DEBUGGING
-    useEffect(() => {
-        // console.log(itemsRefs)
-    })
-
     function updateListTitle() {
+
+        //Update the list on the backend
+        const updatedList: ListModel = {
+            ...list,
+            title: editedTitle
+        }
+        const api = ReactKanbanApi.getInstance()
+        dispatch(syncToBackend(api?.renameList, updatedList))
+
         dispatch({
             type: "RENAME_LIST",
             payload: {
@@ -95,6 +113,8 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
             }
         } as ListAction)
         setEditingListTitle(false)
+
+
     }
 
     function updateListTitleOnEnterPressed(e: KeyboardEvent) {
@@ -161,6 +181,16 @@ const List = ({items, title, className, id}: ListModel & { className?: string })
                 targetListId: id
             } as MoveItemPayload
         } as ListAction)
+
+        //Update the backend
+
+        //Change item parent
+        const updatedItem: Item = {
+            ...item.item,
+            parentId: id
+        }
+        const api = ReactKanbanApi.getInstance();
+        dispatch(syncToBackend(api?.updateListAfterItemMoved.bind(api), item.item.parentId, list, updatedItem, pos))
     }
 
     function listItemHover(item: DraggedListItem, monitor: DropTargetMonitor) {
