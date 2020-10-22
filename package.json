@@ -1,6 +1,6 @@
 {
   "name": "react-kanban",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "dependencies": {
     "@react-hook/window-size": "^3.0.7",
