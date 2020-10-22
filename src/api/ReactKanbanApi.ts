@@ -9,6 +9,7 @@ import {ListModel} from "../models/ListModel";
 import {getEmptyBoard, getEmptyItem} from "../utils/functions/EmptyModelGenerators";
 import {Item} from "../models/Item";
 import {convertItemToApiItem} from "./models/Item";
+import moveItem from "../reducers/util/MoveItem";
 
 const BOARDS_COLLECTION = "boards"
 
@@ -89,9 +90,9 @@ export default class ReactKanbanApi {
 
     async addItemToList(boardId: string, listId: string, itemId: string) {
         const apiItem = convertItemToApiItem(getEmptyItem(listId, itemId));
-        const board = await ReactKanbanApi.boardsCollectionRef.doc(boardId).get().then(val => val.data() as Board | undefined)
-        if (board) {
-            const lists = board.lists;
+        console.log(this)
+        const lists = await this.getListsFromBoard(boardId);
+        if (lists) {
             // Add an item to the specified list
             const updatedLists = lists.map(list => {
                 if (list.id !== listId)
@@ -109,12 +110,17 @@ export default class ReactKanbanApi {
 
     }
 
-    async changeItemContent(boardId: string, item: Item) {
-        const lists = await ReactKanbanApi.boardsCollectionRef.doc(boardId).get().then(doc => doc.data() as Board | undefined).then(data => data?.lists);
+    private getListsFromBoard(boardId: string): Promise<ListModel[] | undefined> {
+        return ReactKanbanApi.boardsCollectionRef.doc(boardId).get().then(doc => doc.data() as Board | undefined).then(data => data?.lists);
+    }
+
+    async changeItemContent(boardId: string,item: Item) {
+        const lists = await this.getListsFromBoard(boardId);
         if (lists) {
             const updatedLists = lists.map(list => {
-                if (list.id !== item.parentId)
+                if (list.id !== item.parentId) {
                     return list;
+                }
                 else {
                     return {
                         ...list,
@@ -132,6 +138,28 @@ export default class ReactKanbanApi {
             return ReactKanbanApi.boardsCollectionRef.doc(boardId).update({
                 lists: updatedLists
             } as Partial<Board>)
+        }
+    }
+
+    async updateListAfterItemMoved(boardId: string, sourceListId: string, targetList: ListModel, item: Item, pos: number) {
+        const lists = await this.getListsFromBoard(boardId);
+        if (lists) {
+            const sourceList = lists.find(list => list.id === sourceListId);
+            if (sourceList) {
+                const [mappedSourceList, mappedTargetList] = moveItem(sourceList, targetList, item, pos);
+                if (mappedSourceList && mappedTargetList) {
+                    const updatedLists = lists.map(list => {
+                        if (list.id === mappedTargetList.id)
+                            return mappedTargetList
+                        else if (list.id === mappedSourceList.id)
+                            return mappedSourceList;
+                        else return list;
+                    })
+                    return ReactKanbanApi.boardsCollectionRef.doc(boardId).update({
+                        lists: updatedLists
+                    } as Partial<Board>)
+                }
+            }
         }
     }
 

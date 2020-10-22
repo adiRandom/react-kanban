@@ -86,7 +86,7 @@ const ListItem = ({index, sendRefToParent, item, requestContextMenu}: ListItemPr
             parentId: item.parentId,
             isEditing: false
         }
-        dispatch(syncToBackend(api?.changeItemContent, updatedItem))
+        dispatch(syncToBackend(api?.changeItemContent.bind(api), updatedItem))
     }
 
     function updateItemContentOnEnterPressed(e: KeyboardEvent) {

@@ -20,6 +20,7 @@ import {DropTargetMonitor, useDrop, XYCoord} from "react-dnd";
 import ReactKanbanApi from "../../api/ReactKanbanApi";
 import {syncToBackend} from "../../actions/BoardActions";
 import getId from "../../utils/functions/IdGenerator";
+import {Item} from "../../models/Item";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
@@ -35,7 +36,7 @@ const AddItem = ({parentId}: { parentId: string }) => {
             } as AddItemPayload
         } as ListAction)
         const api = ReactKanbanApi.getInstance();
-        dispatch(syncToBackend(api?.addItemToList,parentId,itemId))
+        dispatch(syncToBackend(api?.addItemToList.bind(api), parentId, itemId))
     }
 
     return (
@@ -178,6 +179,16 @@ const List = (list: ListModel & { className?: string }) => {
                 targetListId: id
             } as MoveItemPayload
         } as ListAction)
+
+        //Update the backend
+
+        //Change item parent
+        const updatedItem: Item = {
+            ...item.item,
+            parentId: id
+        }
+        const api = ReactKanbanApi.getInstance();
+        dispatch(syncToBackend(api?.updateListAfterItemMoved.bind(api), item.item.parentId, list, updatedItem, pos))
     }
 
     function listItemHover(item: DraggedListItem, monitor: DropTargetMonitor) {
