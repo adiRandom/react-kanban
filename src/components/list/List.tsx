@@ -7,7 +7,7 @@ import editIcon from "../../res/icons/edit.png"
 import style from "./List.module.css"
 import {ListModel} from "../../models/ListModel";
 import typography from '../../res/theme/typography.module.css'
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AddItemPayload, ListAction, MoveItemPayload} from "../../actions/ListAction";
 import addIcon from "../../res/icons/baseline_add_black_48dp.png"
 import {DialogAction} from "../../actions/DialogActions";
@@ -21,10 +21,12 @@ import ReactKanbanApi from "../../api/ReactKanbanApi";
 import {syncToBackend} from "../../actions/BoardActions";
 import getId from "../../utils/functions/IdGenerator";
 import {Item} from "../../models/Item";
+import {Store} from "../../store/Store";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
     const dispatch = useDispatch()
+    const holdingList = useSelector<Store>(state => state.lists.find(list => list.id === parentId))
 
     function onClick() {
         const itemId = getId(32)
@@ -36,7 +38,7 @@ const AddItem = ({parentId}: { parentId: string }) => {
             } as AddItemPayload
         } as ListAction)
         const api = ReactKanbanApi.getInstance();
-        dispatch(syncToBackend(api?.addItemToList.bind(api), parentId, itemId))
+        dispatch(syncToBackend(api?.addItemToList.bind(api), holdingList, itemId))
     }
 
     return (

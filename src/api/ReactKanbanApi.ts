@@ -12,15 +12,19 @@ import {convertItemToApiItem} from "./models/Item";
 import moveItem from "../reducers/util/MoveItem";
 
 const BOARDS_COLLECTION = "boards"
+// const ITEMS_COLLECTION = "items"
 
 export default class ReactKanbanApi {
     private static db?: firestore.Firestore = undefined;
     private static boardsCollectionRef: firestore.CollectionReference;
+    // private static itemsCollectionRef: firestore.CollectionReference;
     private static storageBucket: storage.Storage
 
     private constructor(_db: firestore.Firestore) {
         ReactKanbanApi.db = _db
         ReactKanbanApi.boardsCollectionRef = _db.collection(BOARDS_COLLECTION);
+        // ReactKanbanApi.itemsCollectionRef = _db.collection(ITEMS_COLLECTION);
+
         ReactKanbanApi.storageBucket = storage()
     }
 
@@ -37,7 +41,7 @@ export default class ReactKanbanApi {
     async createBoard(id: string) {
         return ReactKanbanApi.boardsCollectionRef.doc(id).set({
             ...getEmptyBoard(id),
-            lists: []
+            lists: {}
         } as Board)
     }
 
@@ -61,21 +65,9 @@ export default class ReactKanbanApi {
     }
 
     async renameList(boardId: string, list: ListModel) {
-        const board = await ReactKanbanApi.boardsCollectionRef.doc(boardId).get().then(doc => doc.data() as Board | undefined)
-        if (board) {
-            const oldLists = board.lists
-            const updatedList = oldLists.map(val => {
-                if (val.id === list.id)
-                    return {
-                        ...val,
-                        title: list.title
-                    }
-                else return val
-            })
-            return ReactKanbanApi.boardsCollectionRef.doc(boardId).update({
-                lists: updatedList
-            } as Partial<Board>)
-        }
+        const updateBoard: any = {};
+        updateBoard[`lists.${list.id}.title`] = list.title;
+        return ReactKanbanApi.boardsCollectionRef.doc(boardId).update(updateBoard)
     }
 
     async changeBackgroundImage(id: string, backgroundImage: File) {
@@ -88,79 +80,45 @@ export default class ReactKanbanApi {
 
     }
 
-    async addItemToList(boardId: string, listId: string, itemId: string) {
-        const apiItem = convertItemToApiItem(getEmptyItem(listId, itemId));
-        console.log(this)
-        const lists = await this.getListsFromBoard(boardId);
-        if (lists) {
-            // Add an item to the specified list
-            const updatedLists = lists.map(list => {
-                if (list.id !== listId)
-                    return list
-                else
-                    return {
-                        ...list,
-                        items: [...list.items, apiItem]
-                    }
-            })
-            return ReactKanbanApi.boardsCollectionRef.doc(boardId).update({
-                lists: updatedLists
-            } as Partial<Board>)
+    async addItemToList(boardId: string, list: ListModel, itemId: string) {
+        const apiItem = convertItemToApiItem(getEmptyItem(list.id, itemId));
+        // Add an item to the specified list
+        const updatedList = {
+            ...list,
+            items: [...list.items, apiItem]
         }
-
+        const updatedBoard: any = {};
+        updatedBoard[`lists.${list.id}`] = updatedList;
+        return ReactKanbanApi.boardsCollectionRef.doc(boardId).update(updatedBoard);
     }
 
-    private getListsFromBoard(boardId: string): Promise<ListModel[] | undefined> {
+
+    private getListsFromBoard(boardId: string): Promise<{ [key: string]: ListModel } | undefined> {
         return ReactKanbanApi.boardsCollectionRef.doc(boardId).get().then(doc => doc.data() as Board | undefined).then(data => data?.lists);
     }
 
-    async changeItemContent(boardId: string,item: Item) {
-        const lists = await this.getListsFromBoard(boardId);
-        if (lists) {
-            const updatedLists = lists.map(list => {
-                if (list.id !== item.parentId) {
-                    return list;
-                }
-                else {
-                    return {
-                        ...list,
-                        items: list.items.map(_item => {
-                            if (_item.id !== item.id)
-                                return _item;
-                            else return {
-                                ..._item,
-                                content: item.content
-                            }
-                        })
-                    }
-                }
-            })
-            return ReactKanbanApi.boardsCollectionRef.doc(boardId).update({
-                lists: updatedLists
-            } as Partial<Board>)
+    async changeItemContent(boardId: string, list: ListModel, item: Item) {
+        const updatedList = {
+            ...list,
+            items: list.items.map(_item => _item.id === item.id ? item : convertItemToApiItem(_item))
         }
+        const updatedBoard: any = {};
+        updatedBoard[`lists.${item.parentId}`] = updatedList;
+        return ReactKanbanApi.boardsCollectionRef.doc(boardId).update(updatedBoard)
     }
+
 
     async updateListAfterItemMoved(boardId: string, sourceListId: string, targetList: ListModel, item: Item, pos: number) {
         const lists = await this.getListsFromBoard(boardId);
         if (lists) {
-            const sourceList = lists.find(list => list.id === sourceListId);
+            const sourceList = lists[sourceListId];
             if (sourceList) {
-                const [mappedSourceList, mappedTargetList] = moveItem(sourceList, targetList, item, pos);
-                if (mappedSourceList && mappedTargetList) {
-                    const updatedLists = lists.map(list => {
-                        if (list.id === mappedTargetList.id)
-                            return mappedTargetList
-                        else if (list.id === mappedSourceList.id)
-                            return mappedSourceList;
-                        else return list;
-                    })
-                    return ReactKanbanApi.boardsCollectionRef.doc(boardId).update({
-                        lists: updatedLists
-                    } as Partial<Board>)
-                }
+                const [mappedSourceList, mappedTargetList] = moveItem(sourceList, targetList, convertItemToApiItem(item), pos);
+                const updatedBoard: any = {};
+                updatedBoard[`lists.${mappedTargetList.id}`] = mappedTargetList;
+                updatedBoard[`lists.${mappedSourceList.id}`] = mappedSourceList;
+                return ReactKanbanApi.boardsCollectionRef.doc(boardId).update(updatedBoard)
             }
         }
     }
-
 }

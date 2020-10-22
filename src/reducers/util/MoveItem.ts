@@ -3,10 +3,11 @@
  */
 import {ListModel} from "../../models/ListModel";
 import {Item} from "../../models/Item";
+import {Item as ApiItem} from "../../api/models/Item"
 
 // Returns a tuple with a mapping of the sourceList and targetList after the item was moved to pos
 // Inside the tuple, the first item is the mapped source and the second is the mapped target
-export default function moveItem(sourceList: ListModel, targetList: ListModel, item: Item, pos: number): [ListModel, ListModel] {
+export default function moveItem(sourceList: ListModel, targetList: ListModel, item: Item|ApiItem, pos: number): [ListModel, ListModel] {
 
     // Special case for moving the item inside the same list
     if (sourceList.id === targetList.id) {
