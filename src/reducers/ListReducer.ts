@@ -9,11 +9,10 @@ import {
     RenameListPayload,
     SaveEditItemPayload,
     ModifyItemPayload,
-    MoveItemPayload
+    MoveItemPayload, AddItemPayload
 } from "../actions/ListAction";
 import INITIAL_STATE from "../store/InitialState";
-import getId from "../utils/functions/IdGenerator";
-import {getEmptyList} from "../utils/functions/EmptyModelGenerators";
+import {getEmptyItem, getEmptyList} from "../utils/functions/EmptyModelGenerators";
 
 const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lists, action) => {
     switch (action.type) {
@@ -36,18 +35,13 @@ const ListReducer: Reducer<ListModel[], ListAction> = (state = INITIAL_STATE.lis
             })
         }
         case "ADD_ITEM": {
-            const id = action.payload as string
+            const {parentId,itemId} = action.payload as AddItemPayload
             //Add item to the specified list
             return state.map(val => {
-                if (val.id === id)
+                if (val.id === parentId)
                     return {
                         ...val,
-                        items: [...val.items, {
-                            content: "New item",
-                            id: getId(32),
-                            isEditing: true,
-                            parentId: id
-                        }]
+                        items: [...val.items, getEmptyItem(parentId,itemId)]
                     }
                 else
                     return val

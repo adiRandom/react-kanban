@@ -19,7 +19,7 @@ export type ListAction = {
     type: ListActionType,
     //ListModel[] - Lists to be loaded in the board retrieved from the backend
     //string - Parent list id for the new item
-    payload?: ListModel[] | RenameListPayload | string | ModifyItemPayload | MoveItemPayload
+    payload?: ListModel[] | RenameListPayload | string | ModifyItemPayload | MoveItemPayload | AddItemPayload
 }
 
 export type RenameListPayload = {
@@ -44,4 +44,9 @@ export type MoveItemPayload = {
     itemListId: string,
     targetListId: string,
     pos: number
+}
+
+export type AddItemPayload = {
+    itemId: string,
+    parentId: string
 }

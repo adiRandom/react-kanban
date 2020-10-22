@@ -8,7 +8,7 @@ import style from "./List.module.css"
 import {ListModel} from "../../models/ListModel";
 import typography from '../../res/theme/typography.module.css'
 import {useDispatch} from "react-redux";
-import {ListAction, MoveItemPayload} from "../../actions/ListAction";
+import {AddItemPayload, ListAction, MoveItemPayload} from "../../actions/ListAction";
 import addIcon from "../../res/icons/baseline_add_black_48dp.png"
 import {DialogAction} from "../../actions/DialogActions";
 import {DialogType} from "../../models/Dialog";
@@ -19,16 +19,23 @@ import ListItem, {DraggedListItem, LIST_ITEM_DRAG_TYPE} from "./ListItem/ListIte
 import {DropTargetMonitor, useDrop, XYCoord} from "react-dnd";
 import ReactKanbanApi from "../../api/ReactKanbanApi";
 import {syncToBackend} from "../../actions/BoardActions";
+import getId from "../../utils/functions/IdGenerator";
 
 const AddItem = ({parentId}: { parentId: string }) => {
 
     const dispatch = useDispatch()
 
     function onClick() {
+        const itemId = getId(32)
         dispatch({
             type: "ADD_ITEM",
-            payload: parentId
+            payload: {
+                itemId,
+                parentId
+            } as AddItemPayload
         } as ListAction)
+        const api = ReactKanbanApi.getInstance();
+        dispatch(syncToBackend(api?.addItemToList,parentId,itemId))
     }
 
     return (
@@ -84,11 +91,6 @@ const List = (list: ListModel & { className?: string }) => {
         }
     }, [editingListTitle])
 
-
-    //DEBUGGING
-    useEffect(() => {
-        // console.log(itemsRefs)
-    })
 
     function updateListTitle() {
 
